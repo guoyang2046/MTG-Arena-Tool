@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-var-requires */
 import _ from "lodash";
-import React, { useState } from "react";
-import styled from "styled-components";
+import React from "react";
 
-import FilterPanel from "../../FilterPanel";
+import { DECKS_TABLE_MODE } from "../../../shared/constants";
+
 import {
-  ArtTileHeader,
-  ArtTileCell,
   NameCell,
   ColorsCell,
   FormatCell,
@@ -14,7 +12,6 @@ import {
   DurationCell,
   DatetimeCell,
   MetricCell,
-  MetricText,
   WinRateCell,
   LastEditWinRateCell,
   MissingCardsCell,
@@ -22,7 +19,6 @@ import {
   ArchivedCell
 } from "./cells";
 import {
-  StyledCheckboxContainer,
   TextBoxFilter,
   ColorColumnFilter,
   NumberRangeColumnFilter,
@@ -30,18 +26,18 @@ import {
   fuzzyTextFilterFn,
   archivedFilterFn,
   colorsFilterFn,
-  uberSearchFilterFn
+  deckSearchFilterFn
 } from "./filters";
-import { CellProps, DecksTableProps, DecksTableState } from "./types";
+import {
+  DecksTableProps,
+  DecksTableState,
+  DecksTableControlsProps
+} from "./types";
+import PagingControls, { PagingControlsProps } from "../PagingControls";
+import DecksTableControls from "./DecksTableControls";
+import { DecksTableViewRow, DecksArtViewRow } from "./rows";
 
 const ReactTable = require("react-table"); // no @types package for current rc yet
-
-const PresetButton = styled(MetricText).attrs(props => ({
-  className: (props.className ?? "") + " button_simple"
-}))`
-  margin: 0 4px 5px 4px;
-  width: 90px;
-`;
 
 export default function DecksTable({
   data,
@@ -49,15 +45,11 @@ export default function DecksTable({
   filterMatchesCallback,
   tableStateCallback,
   cachedState,
+  cachedTableMode,
+  filterDecksCallback,
   openDeckCallback,
   ...cellCallbacks
 }: DecksTableProps): JSX.Element {
-  const CellWrapper = (
-    component: (props: CellProps) => JSX.Element
-  ): ((props: CellProps) => JSX.Element) => {
-    return (props: CellProps): JSX.Element =>
-      component({ ...props, ...cellCallbacks });
-  };
   const defaultColumn = React.useMemo(
     () => ({
       disableFilters: true
@@ -67,16 +59,7 @@ export default function DecksTable({
   const columns = React.useMemo(
     () => [
       { id: "deckId", accessor: "id" },
-      {
-        Header: ArtTileHeader,
-        accessor: "deckTileId",
-        disableFilters: false,
-        filter: "uberSearch",
-        Filter: TextBoxFilter,
-        minWidth: 100,
-        disableSortBy: true,
-        Cell: CellWrapper(ArtTileCell)
-      },
+      { accessor: "deckTileId" },
       {
         Header: "Name",
         accessor: "name",
@@ -84,7 +67,9 @@ export default function DecksTable({
         filter: "fuzzyText",
         Filter: TextBoxFilter,
         sortType: "alphanumeric",
-        Cell: CellWrapper(NameCell)
+        Cell: NameCell,
+        gridWidth: "200px",
+        defaultVisible: true
       },
       {
         Header: "Colors",
@@ -93,7 +78,10 @@ export default function DecksTable({
         Filter: ColorColumnFilter,
         filter: "colors",
         minWidth: 170,
-        Cell: ColorsCell
+        Cell: ColorsCell,
+        gridWidth: "150px",
+        mayToggle: true,
+        defaultVisible: true
       },
       { accessor: "colors" },
       {
@@ -102,7 +90,10 @@ export default function DecksTable({
         disableFilters: false,
         Filter: TextBoxFilter,
         filter: "fuzzyText",
-        Cell: CellWrapper(FormatCell)
+        Cell: FormatCell,
+        gridWidth: "150px",
+        mayToggle: true,
+        defaultVisible: true
       },
       {
         Header: "Tags",
@@ -111,25 +102,34 @@ export default function DecksTable({
         Filter: TextBoxFilter,
         filter: "fuzzyText",
         disableSortBy: true,
-        Cell: CellWrapper(TagsCell)
+        Cell: TagsCell,
+        gridWidth: "200px",
+        mayToggle: true
       },
       {
         Header: "Last Updated",
         accessor: "timeUpdated",
         Cell: DatetimeCell,
-        sortDescFirst: true
+        sortDescFirst: true,
+        mayToggle: true,
+        needsTileLabel: true
       },
       {
         Header: "Last Played",
         accessor: "timePlayed",
         Cell: DatetimeCell,
-        sortDescFirst: true
+        sortDescFirst: true,
+        mayToggle: true,
+        needsTileLabel: true
       },
       {
         Header: "Last Touched",
         accessor: "timeTouched",
         Cell: DatetimeCell,
-        sortDescFirst: true
+        sortDescFirst: true,
+        mayToggle: true,
+        defaultVisible: true,
+        needsTileLabel: true
       },
       {
         Header: "Won",
@@ -137,7 +137,9 @@ export default function DecksTable({
         Cell: MetricCell,
         disableFilters: false,
         Filter: NumberRangeColumnFilter,
-        filter: "between"
+        filter: "between",
+        mayToggle: true,
+        needsTileLabel: true
       },
       {
         Header: "Lost",
@@ -145,7 +147,9 @@ export default function DecksTable({
         Cell: MetricCell,
         disableFilters: false,
         Filter: NumberRangeColumnFilter,
-        filter: "between"
+        filter: "between",
+        mayToggle: true,
+        needsTileLabel: true
       },
       {
         Header: "Total",
@@ -153,17 +157,23 @@ export default function DecksTable({
         Cell: MetricCell,
         disableFilters: false,
         Filter: NumberRangeColumnFilter,
-        filter: "between"
+        filter: "between",
+        mayToggle: true,
+        needsTileLabel: true
       },
       {
         Header: "Total Duration",
         accessor: "duration",
-        Cell: DurationCell
+        Cell: DurationCell,
+        mayToggle: true,
+        needsTileLabel: true
       },
       {
         Header: "Avg. Duration",
         accessor: "avgDuration",
-        Cell: DurationCell
+        Cell: DurationCell,
+        mayToggle: true,
+        needsTileLabel: true
       },
       {
         Header: "Winrate",
@@ -171,7 +181,10 @@ export default function DecksTable({
         Cell: WinRateCell,
         disableFilters: false,
         Filter: NumberRangeColumnFilter,
-        filter: "between"
+        filter: "between",
+        mayToggle: true,
+        defaultVisible: true,
+        needsTileLabel: true
       },
       { accessor: "winrate" },
       { accessor: "interval", sortInverted: true },
@@ -180,7 +193,9 @@ export default function DecksTable({
       {
         Header: "Since last edit",
         accessor: "lastEditWinrate",
-        Cell: LastEditWinRateCell
+        Cell: LastEditWinRateCell,
+        mayToggle: true,
+        needsTileLabel: true
       },
       { accessor: "lastEditWins" },
       { accessor: "lastEditLosses" },
@@ -191,7 +206,8 @@ export default function DecksTable({
         Cell: MissingCardsCell,
         disableFilters: false,
         Filter: NumberRangeColumnFilter,
-        filter: "between"
+        filter: "between",
+        mayToggle: true
       },
       { accessor: "rare" },
       { accessor: "common" },
@@ -207,399 +223,160 @@ export default function DecksTable({
         Filter: ArchiveColumnFilter,
         minWidth: 98,
         disableFilters: false,
-        Cell: CellWrapper(ArchivedCell),
-        sortType: "basic"
+        Cell: ArchivedCell,
+        sortType: "basic",
+        mayToggle: true,
+        defaultVisible: true
       }
     ],
-    [CellWrapper]
+    []
   );
   const filterTypes = React.useMemo(
     () => ({
       fuzzyText: fuzzyTextFilterFn,
       showArchived: archivedFilterFn,
-      colors: colorsFilterFn,
-      uberSearch: uberSearchFilterFn
+      colors: colorsFilterFn
     }),
     []
   );
   const initialState: DecksTableState = React.useMemo(() => {
+    // default hidden columns
+    const hiddenColumns = columns
+      .filter(column => !column.defaultVisible)
+      .map(column => column.id ?? column.accessor);
     const state = _.defaultsDeep(cachedState, {
-      hiddenColumns: [
-        "archived",
-        "deckId",
-        "custom",
-        "boosterCost",
-        "colors",
-        "lastEditLosses",
-        "lastEditTotal",
-        "lastEditWinrate",
-        "lastEditWins",
-        "timePlayed",
-        "timeUpdated",
-        "wins",
-        "losses",
-        "total",
-        "rare",
-        "common",
-        "uncommon",
-        "mythic",
-        "duration",
-        "avgDuration",
-        "interval",
-        "winrate",
-        "winrateLow",
-        "winrateHigh"
-      ],
-      sortBy: [{ id: "timeTouched", desc: true }]
+      hiddenColumns,
+      sortBy: [{ id: "timeTouched", desc: true }],
+      pageSize: 25
     });
-    if (!state.hiddenColumns.includes("archived")) {
-      state.hiddenColumns.push("archived");
+    // ensure data-only columns are all invisible
+    for (const column of columns) {
+      if (!column.defaultVisible && !column.mayToggle) {
+        state.hiddenColumns.push(column.id);
+      }
     }
     return state;
-  }, [cachedState]);
+  }, [cachedState, columns]);
 
   const {
     flatColumns,
     headers,
     getTableProps,
     getTableBodyProps,
-    headerGroups,
     rows,
+    page,
     prepareRow,
     toggleSortBy,
     toggleHideColumn,
     setAllFilters,
-    setFilter
+    setFilter,
+    preGlobalFilteredRows,
+    setGlobalFilter,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state
   } = ReactTable.useTable(
     {
       columns,
       data: React.useMemo(() => data, [data]),
-      useControlledState: (state: DecksTableState) => {
-        return React.useMemo(() => {
-          tableStateCallback(state);
-          return state;
-        }, [state, tableStateCallback]);
-      },
       defaultColumn,
       filterTypes,
+      globalFilter: deckSearchFilterFn,
       initialState,
       autoResetFilters: false,
-      autoResetSortBy: false
+      autoResetGlobalFilter: false,
+      autoResetSortBy: false,
+      ...cellCallbacks
     },
     ReactTable.useFilters,
-    ReactTable.useSortBy
+    ReactTable.useGlobalFilter,
+    ReactTable.useSortBy,
+    ReactTable.usePagination
   );
+  const { globalFilter, pageIndex, pageSize } = state;
+  const [tableMode, setTableMode] = React.useState(cachedTableMode);
 
-  const toggleableIds = [
-    "name",
-    "format",
-    "colorSortVal",
-    "duration",
-    "avgDuration",
-    "boosterCost",
-    "lastEditWinrate",
-    "timePlayed",
-    "timeUpdated",
-    "timeTouched",
-    "losses",
-    "tags",
-    "total",
-    "winrate100",
-    "wins",
-    "archivedCol"
-  ];
+  React.useEffect(() => {
+    tableStateCallback({ ...state, decksTableMode: tableMode });
+  }, [state, tableMode, tableStateCallback]);
+  React.useEffect(() => {
+    filterDecksCallback(rows.map((row: any) => row.values.deckId));
+  }, [filterDecksCallback, rows]);
 
-  const toggleableColumns = flatColumns.filter((column: any) =>
-    toggleableIds.includes(column.id)
-  );
+  const pagingProps: PagingControlsProps = {
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    pageIndex,
+    pageSize
+  };
 
-  const initialFiltersVisible: { [key: string]: boolean } = {};
-  for (const column of flatColumns) {
-    if (column.canFilter) {
-      initialFiltersVisible[column.id] = false;
-    }
-  }
-  initialFiltersVisible["deckTileId"] = true; // uber search always visible
-  const [filtersVisible, setFiltersVisible] = useState(initialFiltersVisible);
-  const [togglesVisible, setTogglesVisible] = useState(false);
-  const filterPanel = new FilterPanel(
-    "decks_top",
+  const visibleHeaders = headers.filter((header: any) => header.isVisible);
+  const gridTemplateColumns = visibleHeaders
+    .map((header: any) => header.gridWidth ?? "1fr")
+    .join(" ");
+
+  const tableControlsProps: DecksTableControlsProps = {
+    canNextPage,
+    canPreviousPage,
     filterMatchesCallback,
     filters,
-    [],
-    [],
-    [],
-    false,
-    [],
-    false,
-    null,
-    false,
-    false
-  );
-
-  const recentFilters = (): { id: string; value: any }[] => [
-    { id: "archivedCol", value: "hideArchived" }
-  ];
-  const bestFilters = (): { id: string; value: any }[] => [
-    { id: "archivedCol", value: "hideArchived" },
-    { id: "wins", value: [5, undefined] },
-    { id: "winrate100", value: [50, undefined] }
-  ];
-  const wantedFilters = (): { id: string; value: any }[] => [
-    { id: "archivedCol", value: "hideArchived" },
-    { id: "boosterCost", value: [1, undefined] }
-  ];
+    flatColumns,
+    getTableProps,
+    globalFilter,
+    gotoPage,
+    gridTemplateColumns,
+    nextPage,
+    pageCount,
+    pageIndex,
+    pageOptions,
+    pageSize,
+    preGlobalFilteredRows,
+    previousPage,
+    setAllFilters,
+    setFilter,
+    setGlobalFilter,
+    setPageSize,
+    setTableMode,
+    tableMode,
+    toggleHideColumn,
+    toggleSortBy,
+    visibleHeaders
+  };
 
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          color: "var(--color-light)",
-          padding: "16px",
-          paddingBottom: 0,
-          cursor: "pointer",
-          alignItems: "center"
-        }}
-      >
-        <span style={{ paddingBottom: "8px" }}>Filter match results:</span>
-        <span style={{ width: "260px" }}>{filterPanel.render()}</span>
-        <span style={{ paddingBottom: "8px" }}>Presets:</span>
-        <PresetButton
-          onClick={(): void => {
-            setAllFilters(recentFilters);
-            setFiltersVisible(initialFiltersVisible);
-            toggleSortBy("timeTouched", true);
-            for (const columnId of toggleableIds) {
-              const isVisible = [
-                "name",
-                "format",
-                "colorSortVal",
-                "timeTouched",
-                "lastEditWinrate"
-              ].includes(columnId);
-              toggleHideColumn(columnId, !isVisible);
-            }
-          }}
-        >
-          Recent
-        </PresetButton>
-        <PresetButton
-          onClick={(): void => {
-            setAllFilters(bestFilters);
-            setFiltersVisible({
-              ...initialFiltersVisible,
-              wins: true,
-              winrate100: true
-            });
-            toggleSortBy("winrate100", true);
-            for (const columnId of toggleableIds) {
-              const isVisible = [
-                "name",
-                "format",
-                "colorSortVal",
-                "losses",
-                "winrate100",
-                "wins"
-              ].includes(columnId);
-              toggleHideColumn(columnId, !isVisible);
-            }
-          }}
-        >
-          Best
-        </PresetButton>
-        <PresetButton
-          onClick={(): void => {
-            setAllFilters(wantedFilters);
-            setFiltersVisible({ ...initialFiltersVisible, boosterCost: true });
-            toggleSortBy("boosterCost", true);
-            for (const columnId of toggleableIds) {
-              const isVisible = [
-                "name",
-                "format",
-                "colorSortVal",
-                "boosterCost",
-                "timeUpdated"
-              ].includes(columnId);
-              toggleHideColumn(columnId, !isVisible);
-            }
-          }}
-        >
-          Wanted
-        </PresetButton>
-        <MetricText
-          onClick={(): void => setTogglesVisible(!togglesVisible)}
-          className="button_simple"
-          style={{ margin: "0 0 5px 12px" }}
-        >
-          {togglesVisible ? "Hide" : "Show"} Column Toggles
-        </MetricText>
-        {togglesVisible &&
-          toggleableColumns.map((column: any) => (
-            <StyledCheckboxContainer key={column.id}>
-              {column.render("Header")}
-              <input type="checkbox" {...column.getToggleHiddenProps()} />
-              <span className={"checkmark"} />
-            </StyledCheckboxContainer>
-          ))}
-      </div>
-      <div
-        className="decks_table_head"
-        style={{
-          gridTemplateColumns: `100px 200px 150px 150px ${"1fr ".repeat(
-            headerGroups[0].headers ? headerGroups[0].headers.length - 4 : 1
-          )}`
-        }}
-        {...getTableProps()}
-      >
-        {headers
-          .filter((header: any) => header.isVisible)
-          .map((column: any, ii: number) => (
-            <div
-              {...column.getHeaderProps(column.getSortByToggleProps())}
-              className={"hover_label"}
-              style={{
-                height: "64px",
-                gridArea: `1 / ${ii + 1} / 1 / ${ii + 2}`
-              }}
-              key={column.id}
-            >
-              <div className={"decks_table_head_container"}>
-                <div
-                  className={
-                    column.isSorted
-                      ? column.isSortedDesc
-                        ? " sort_desc"
-                        : " sort_asc"
-                      : ""
-                  }
-                  style={{ marginRight: "4px", width: "16px" }}
-                />
-                <div className={"flex_item"}>{column.render("Header")}</div>
-                {column.canFilter && column.id !== "deckTileId" && (
-                  <div
-                    style={{ marginRight: 0 }}
-                    className={"button settings"}
-                    onClick={(e): void => {
-                      e.stopPropagation();
-                      setFiltersVisible({
-                        ...filtersVisible,
-                        [column.id]: !filtersVisible[column.id]
-                      });
-                    }}
-                    title={
-                      (filtersVisible[column.id] ? "hide" : "show") +
-                      " column filter"
-                    }
-                  />
-                )}
-                {column.filterValue && column.id !== "deckTileId" && (
-                  <div
-                    style={{ marginRight: 0 }}
-                    className={"button close"}
-                    onClick={(e): void => {
-                      e.stopPropagation();
-                      setFilter(column.id, undefined);
-                    }}
-                    title={"clear column filter"}
-                  />
-                )}
-              </div>
-              {column.canFilter && filtersVisible[column.id] && (
-                <div
-                  onClick={(e): void => e.stopPropagation()}
-                  style={{
-                    display: "flex",
-                    justifyContent: "center"
-                  }}
-                  title={"filter column"}
-                >
-                  {column.render("Filter")}
-                  {column.filterValue && column.id === "deckTileId" && (
-                    <div
-                      style={{ marginRight: 0 }}
-                      className={"button close"}
-                      onClick={(e): void => {
-                        e.stopPropagation();
-                        setFilter(column.id, undefined);
-                      }}
-                      title={"clear search"}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-      </div>
+    <div className="decks_table_wrap">
+      <DecksTableControls {...tableControlsProps} />
       <div className="decks_table_body" {...getTableBodyProps()}>
-        {rows.map((row: any) => {
+        {page.map((row: any, index: number) => {
           prepareRow(row);
+          const RowRenderer =
+            tableMode === DECKS_TABLE_MODE
+              ? DecksTableViewRow
+              : DecksArtViewRow;
           return (
-            <RowContainer
+            <RowRenderer
               openDeckCallback={openDeckCallback}
               row={row}
+              index={index}
               key={row.index}
+              gridTemplateColumns={gridTemplateColumns}
             />
           );
         })}
       </div>
-    </>
-  );
-}
-
-function RowContainer({
-  row,
-  openDeckCallback
-}: {
-  row: any;
-  openDeckCallback: (id: string) => void;
-}): JSX.Element {
-  const [hover, setHover] = React.useState(false);
-
-  const mouseEnter = React.useCallback(() => {
-    setHover(true);
-  }, []);
-
-  const mouseLeave = React.useCallback(() => {
-    setHover(false);
-  }, []);
-
-  const mouseClick = React.useCallback(() => {
-    openDeckCallback(row.values.deckId);
-  }, []);
-
-  const isLeftAlignCol = (id: string): boolean =>
-    ["deckTileId", "name", "tags"].includes(id);
-
-  return (
-    <div
-      className="decks_table_body_row"
-      style={{
-        gridTemplateColumns: `100px 200px 150px 150px ${"1fr ".repeat(
-          row.cells.length - 4
-        )}`
-      }}
-      onMouseEnter={mouseEnter}
-      onMouseLeave={mouseLeave}
-      onClick={mouseClick}
-    >
-      {row.cells.map((cell: any) => {
-        cell.hover = hover;
-        return (
-          <div
-            className="inner_div"
-            style={{
-              justifyContent: isLeftAlignCol(cell.column.id) ? "flex-start" : ""
-            }}
-            {...cell.getCellProps()}
-            key={cell.column.id + "_" + row.index}
-            title={`show ${row.values.name} details`}
-          >
-            {cell.render("Cell")}
-          </div>
-        );
-      })}
+      <PagingControls {...pagingProps} />
     </div>
   );
 }
