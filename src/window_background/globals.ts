@@ -44,7 +44,7 @@ let matchGameStats: MatchGameStats[] = [];
 
 let originalDeck: Deck = new Deck();
 
-let odds_sample_size = 1;
+let oddsSampleSize = 1;
 
 let toolVersion: any = null;
 
@@ -73,7 +73,7 @@ export default {
   logTime,
   matchCompletedOnGameNumber,
   matchGameStats,
-  odds_sample_size,
+  oddsSampleSize,
   cardTypesByZone,
   originalDeck,
   stopWatchingLog,

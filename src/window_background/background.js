@@ -391,7 +391,7 @@ ipc.on("add_history_tag", (event, arg) => {
 });
 
 ipc.on("set_odds_samplesize", function(event, state) {
-  globals.odds_sample_size = state;
+  globals.oddsSampleSize = state;
   forceDeckUpdate(false);
   updateDeck(true);
 });
