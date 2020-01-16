@@ -82,7 +82,7 @@ export default function OutLogInfo(entry: Entry): void {
           added: [],
           removed: []
         },
-        deck: {},
+        deck: {}
       };
 
       for (let i = 0; i < globals.initialLibraryInstanceIds.length; i++) {
