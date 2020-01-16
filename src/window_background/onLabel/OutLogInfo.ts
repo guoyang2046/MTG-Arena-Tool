@@ -13,7 +13,7 @@ import { ipcSend } from "../backgroundUtil";
 import getNameBySeat from "../getNameBySeat";
 import actionLog from "../actionLog";
 import saveMatch from "../saveMatch";
-import endDraft from "../endDraft";
+import endDraft from "../draft/endDraft";
 
 interface Entry extends LogEntry {
   json: () => LogInfo;

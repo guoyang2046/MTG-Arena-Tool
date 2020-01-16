@@ -5,7 +5,7 @@ export { default as InEventGetPlayerCourseV2 } from "./InEventGetPlayerCourseV2"
 export { default as InEventJoin } from "./InEventJoin";
 export { default as InEventGetCombinedRankInfo } from "./InEventGetCombinedRankInfo";
 export { default as RankUpdated } from "./RankUpdated";
-export { default as MythicRatingUpdated } from "../MythicRatingUpdated";
+export { default as MythicRatingUpdated } from "./MythicRatingUpdated";
 export { default as InEventGetPlayerCoursesV2 } from "./InEventGetPlayerCoursesV2";
 export { default as InDeckGetDeckListsV3 } from "./InDeckGetDeckListsV3";
 export { default as InDeckGetPreconDecks } from "./InDeckGetPreconDecks";

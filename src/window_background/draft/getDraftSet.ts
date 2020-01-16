@@ -1,4 +1,4 @@
-import db from "../shared/database";
+import db from "../../shared/database";
 
 export default function getDraftSet(eventName: string): string {
   if (!eventName) return "";

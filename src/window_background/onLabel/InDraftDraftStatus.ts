@@ -1,9 +1,9 @@
 import LogEntry from "../../types/logDecoder";
 import { DraftStatus } from "../../types/draft";
-import startDraft from "../startDraft";
-import clearDraftData from "../clearDraftData";
-import getDraftData from "../getDraftData";
-import setDraftData from "../setDraftData";
+import startDraft from "../draft/startDraft";
+import clearDraftData from "../draft/clearDraftData";
+import getDraftData from "../draft/getDraftData";
+import setDraftData from "../draft/setDraftData";
 
 interface Entry extends LogEntry {
   json: () => DraftStatus;

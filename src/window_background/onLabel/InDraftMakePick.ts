@@ -1,7 +1,7 @@
 import LogEntry from "../../types/logDecoder";
-import startDraft from "../startDraft";
-import setDraftData from "../setDraftData";
-import getDraftData from "../getDraftData";
+import startDraft from "../draft/startDraft";
+import setDraftData from "../draft/setDraftData";
+import getDraftData from "../draft/getDraftData";
 import { DraftStatus } from "../../types/draft";
 
 interface Entry extends LogEntry {

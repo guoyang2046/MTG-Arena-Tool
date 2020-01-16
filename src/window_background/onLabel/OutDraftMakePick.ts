@@ -1,6 +1,6 @@
 import LogEntry from "../../types/logDecoder";
-import setDraftData from "../setDraftData";
-import getDraftData from "../getDraftData";
+import setDraftData from "../draft/setDraftData";
+import getDraftData from "../draft/getDraftData";
 
 interface EntryJson {
   params: {

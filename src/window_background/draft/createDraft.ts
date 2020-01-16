@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import playerData from "../shared/player-data";
+import playerData from "../../shared/player-data";
 
 const currentDraftDefault = {
   eventId: "",

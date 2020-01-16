@@ -1,7 +1,7 @@
-import { ARENA_MODE_DRAFT } from "../shared/constants";
-import playerData from "../shared/player-data";
-import { ipcSend } from "./backgroundUtil";
-import globals from "./globals";
+import { ARENA_MODE_DRAFT } from "../../shared/constants";
+import playerData from "../../shared/player-data";
+import { ipcSend } from "../backgroundUtil";
+import globals from "../globals";
 
 export default function startDraft(): void {
   if (globals.debugLog || !globals.firstPass) {

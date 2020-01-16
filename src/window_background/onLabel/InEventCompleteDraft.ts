@@ -1,8 +1,8 @@
-import getDraftData from "../getDraftData";
-import getDraftSet from "../getDraftSet";
-import clearDraftData from "../clearDraftData";
-import setDraftData from "../setDraftData";
-import endDraft from "../endDraft";
+import getDraftData from "../draft/getDraftData";
+import getDraftSet from "../draft/getDraftSet";
+import clearDraftData from "../draft/clearDraftData";
+import setDraftData from "../draft/setDraftData";
+import endDraft from "../draft/endDraft";
 
 import LogEntry from "../../types/logDecoder";
 

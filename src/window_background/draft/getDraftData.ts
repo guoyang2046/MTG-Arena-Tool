@@ -1,5 +1,5 @@
-import playerData from "../shared/player-data";
-import globals from "./globals";
+import playerData from "../../shared/player-data";
+import globals from "../globals";
 import createDraft from "./createDraft";
 
 export default function getDraftData(id: string): any {
