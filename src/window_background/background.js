@@ -21,7 +21,7 @@ import {
   loadPlayerConfig,
   syncSettings
 } from "./loadPlayerConfig";
-import update_deck from "./updateDeck";
+import updateDeck from "./updateDeck";
 
 if (!remote.app.isPackaged) {
   const { openNewGitHubIssue, debugInfo } = require("electron-util");
@@ -393,7 +393,7 @@ ipc.on("add_history_tag", (event, arg) => {
 ipc.on("set_odds_samplesize", function(event, state) {
   globals.odds_sample_size = state;
   forceDeckUpdate(false);
-  update_deck(true);
+  updateDeck(true);
 });
 
 // Set a new log URI

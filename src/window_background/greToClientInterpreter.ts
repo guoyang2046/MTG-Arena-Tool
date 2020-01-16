@@ -9,7 +9,7 @@ import actionLog from "./actionLog";
 import db from "../shared/database";
 import forceDeckUpdate from "./forceDeckUpdate";
 import getNameBySeat from "./getNameBySeat";
-import update_deck from "./updateDeck";
+import updateDeck from "./updateDeck";
 import {
   GreMessage,
   AnnotationType,
@@ -909,7 +909,7 @@ GREMessages.GREMessageType_GameStateMessage = function(msg: GreMessage): void {
 
   globals.currentMatch.playerCardsLeft = globals.currentMatch.player.deck.clone();
   forceDeckUpdate();
-  update_deck(false);
+  updateDeck(false);
 };
 
 GREMessages.GREMessageType_DieRollResultsResp = function(msg): void {

@@ -22,7 +22,7 @@ import {
   ARENA_MODE_DRAFT,
   ARENA_MODE_IDLE
 } from "../shared/constants";
-import update_deck from "./updateDeck";
+import updateDeck from "./updateDeck";
 import globals from "./globals";
 
 const debugLogSpeed = 0.001;
@@ -400,7 +400,7 @@ function finishLoading(): void {
 
     if (globals.duringMatch) {
       ipcSend("set_arena_state", ARENA_MODE_MATCH);
-      update_deck(false);
+      updateDeck(false);
     } else if (globals.duringDraft) {
       ipcSend("set_arena_state", ARENA_MODE_DRAFT);
     } else {
