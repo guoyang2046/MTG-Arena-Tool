@@ -145,12 +145,14 @@ ipc.on("start_background", async function() {
   ipcSend("ipc_log", `Downloading metadata ${settings.metadata_lang}`);
 
   // Check if it is the first time we open this version
+  /*
   if (
     settings.toolVersion == undefined ||
     globals.toolVersion > settings.toolVersion
   ) {
     ipcSend("show_whats_new");
   }
+  */
 });
 
 function offlineLogin() {

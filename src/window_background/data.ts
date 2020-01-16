@@ -53,7 +53,7 @@ export interface ExtendedMatchData {
   eventId: string;
   bestOf: number;
   gameStats: any[];
-  toolVersion: null;
+  toolVersion: number;
   toolRunFromSource: boolean;
   id: string;
   duration: number;
