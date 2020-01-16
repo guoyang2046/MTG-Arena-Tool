@@ -1,11 +1,11 @@
-import db from "../shared/database";
-import { playerDb } from "../shared/db/LocalDatabase";
+import db from "../../shared/database";
+import { playerDb } from "../../shared/db/LocalDatabase";
 
-import playerData from "../shared/player-data";
-import globals from "./globals";
-import { parseWotcTimeFallback, setData } from "./backgroundUtil";
+import playerData from "../../shared/player-data";
+import globals from "../globals";
+import { parseWotcTimeFallback, setData } from "../backgroundUtil";
 
-import LogEntry from "../types/logDecoder";
+import LogEntry from "../../types/logDecoder";
 
 interface EntryJson {
   timestamp: string;
