@@ -2,9 +2,9 @@ import globals from "./globals";
 import Deck from "../shared/deck";
 import { IPC_OVERLAY } from "../shared/constants";
 import { ipcSend } from "./backgroundUtil";
-import { CourseDeck } from "../types/event";
+import { InternalCourse } from "../types/event";
 
-export default function selectDeck(arg: { CourseDeck: CourseDeck }): void {
+export default function selectDeck(arg: InternalCourse): void {
   if (arg.CourseDeck) {
     globals.currentDeck = new Deck(arg.CourseDeck);
   }

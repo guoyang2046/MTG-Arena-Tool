@@ -1,36 +1,32 @@
 // Might conflict with the class?
-export interface ArenaV3Deck {
-  commandZoneGRPIds: null | number[];
-  mainDeck: v3cardsList;
-  sideboard: v3cardsList;
+export interface ArenaV3Deck extends BasicDeck {
   isValid: boolean;
   lockedForUse: boolean;
   lockedForEdit: boolean;
   reourceId?: string;
   cardSkins: CardSkin[];
-  id: string;
-  name: string;
   description: string;
-  format: Format;
-  deckTileId: number;
   cardBack: null | string;
-  lastUpdated: Date;
+  id: string;
 }
 
-export interface SerializedDeck {
-  mainDeck?: anyCardsList;
-  sideboard?: anyCardsList;
-  lastUpdated?: string;
-  name?: string;
-  deckTileId?: number;
-  format?: string;
+export interface SerializedDeck extends BasicDeck {
   custom?: boolean;
   tags?: string[];
   id?: string;
-  commandZoneGRPIds?: number[];
   colors?: number[];
   archetype?: string;
   archived?: boolean;
+}
+
+export interface BasicDeck {
+  commandZoneGRPIds: null | number[];
+  mainDeck: anyCardsList;
+  sideboard: anyCardsList;
+  name: string;
+  deckTileId: number;
+  lastUpdated: Date;
+  format: string;
 }
 
 export interface CardObject {
@@ -60,4 +56,6 @@ export interface CardSkin {
   ccv: string;
 }
 
-export type Format = "" | "Standard" | "Draft" | "precon" | "Brawl";
+// Formats can be added to the logs cosntantly
+// and there are more than just these
+//export type Format = "" | "Standard" | "Draft" | "precon" | "Brawl";

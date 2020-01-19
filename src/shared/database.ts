@@ -11,8 +11,8 @@ import {
   CardSet,
   RewardsDate
 } from "../types/Metadata";
-import { Season, Rank, RankClassInfo } from "../types/Season";
 import { ArenaV3Deck } from "../types/Deck";
+import { SeasonAndRankDetail, Rank, RankInfo } from "../types/event";
 
 const cachePath: string | null =
   app || (remote && remote.app)
@@ -51,7 +51,7 @@ class Database {
   activeEvents: string[];
   preconDecks: { [id: string]: ArenaV3Deck };
   public metadata: Metadata | undefined;
-  season: Season | undefined;
+  season: SeasonAndRankDetail | undefined;
 
   private constructor() {
     this.handleSetActiveEvents = this.handleSetActiveEvents.bind(this);
@@ -130,7 +130,7 @@ class Database {
     this.rewards_weekly_ends = new Date(rewardsDate.weekly);
   }
 
-  handleSetSeason(_event: Event, season: Season): void {
+  handleSetSeason(season: SeasonAndRankDetail): void {
     try {
       this.season = season;
     } catch (e) {
@@ -271,7 +271,7 @@ class Database {
 
   getRankSteps(rank: Rank, tier: number, isLimited: boolean): number {
     if (!this.season) return 0;
-    let rankInfo: RankClassInfo[];
+    let rankInfo: RankInfo[];
     if (isLimited) {
       if (!this.season.limitedRankInfo) return 0;
       rankInfo = this.season.limitedRankInfo;

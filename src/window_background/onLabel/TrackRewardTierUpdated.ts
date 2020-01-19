@@ -4,7 +4,6 @@ import { parseWotcTimeFallback, setData } from "../backgroundUtil";
 import LogEntry from "../../types/logDecoder";
 import saveEconomyTransaction from "../saveEconomyTransaction";
 import { RankRewards } from "../../types/event";
-import minifiedDelta from "../minifiedDelta";
 import { InternalEconomyTransaction } from "../../types/inventory";
 
 interface EntryJson {
@@ -20,9 +19,10 @@ interface Entry extends LogEntry {
 // Is this used still? I need a sample of the log entry
 // like.. REALLY need a sample..
 export default function TrackRewardTierUpdated(entry: Entry): void {
+  /*
   const json = entry.json();
   if (!json) return;
-  // console.log(json);
+  console.log(json);
   const economy = { ...playerData.economy };
 
   const transaction: InternalEconomyTransaction = {
@@ -43,7 +43,7 @@ export default function TrackRewardTierUpdated(entry: Entry): void {
   }
 
   if (transaction.orbCountDiff) {
-    const orbDiff = minifiedDelta(transaction.orbCountDiff);
+    const orbDiff = transaction.orbCountDiff;
     transaction.orbCountDiff = orbDiff;
     if (orbDiff.currentOrbCount !== undefined) {
       economy.currentOrbCount = orbDiff.currentOrbCount;
@@ -55,4 +55,5 @@ export default function TrackRewardTierUpdated(entry: Entry): void {
   // console.log(economy);
   setData({ economy });
   playerDb.upsert("", "economy", economy);
+  */
 }

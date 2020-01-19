@@ -10,6 +10,6 @@ interface Entry extends LogEntry {
 export default function onLabelInEventGetSeasonAndRankDetail(entry: Entry): void {
   const json = entry.json();
   if (!json) return;
-  db.handleSetSeason(null, json);
+  db.handleSetSeason(json);
   ipcSend("set_season", json);
 }

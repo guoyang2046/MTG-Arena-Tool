@@ -12,21 +12,32 @@ import { DEFAULT_TILE } from "./constants";
 import { anyCardsList, SerializedDeck } from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
 
+const defaultDeck: SerializedDeck = {
+  commandZoneGRPIds: [],
+  mainDeck: [],
+  sideboard: [],
+  name: "",
+  deckTileId: 0,
+  lastUpdated: new Date(),
+  format: ""
+};
+
 class Deck {
   private mainboard: CardsList;
   private sideboard: CardsList;
   private commandZoneGRPIds: number[];
   private name: string;
   public id: string;
-  public lastUpdated: string;
+  public lastUpdated: Date;
   public tile: number;
   public _colors: Colors;
   public tags: string[];
   public custom: boolean;
   public archetype: string;
+  public format: string;
 
   constructor(
-    mtgaDeck: SerializedDeck = {},
+    mtgaDeck: SerializedDeck = defaultDeck,
     main: anyCardsList = [],
     side: anyCardsList = []
   ) {
@@ -40,12 +51,13 @@ class Deck {
     this.commandZoneGRPIds = mtgaDeck.commandZoneGRPIds || [];
     this.name = mtgaDeck.name || "";
     this.id = mtgaDeck.id || "";
-    this.lastUpdated = mtgaDeck.lastUpdated || "";
+    this.lastUpdated = mtgaDeck.lastUpdated || new Date();
     this.tile = mtgaDeck.deckTileId ? mtgaDeck.deckTileId : DEFAULT_TILE;
     this._colors = this.getColors();
     this.tags = mtgaDeck.tags || [mtgaDeck.format as string];
     this.custom = mtgaDeck.custom || false;
     this.archetype = mtgaDeck.archetype || "";
+    this.format = mtgaDeck.format || "";
 
     //this.sortMainboard(compare_cards);
     //this.sortSideboard(compare_cards);
@@ -115,7 +127,7 @@ class Deck {
   /**
    * Return the raw commandZoneGRPIds array for later use.
    */
-  getCommanders() {
+  getCommanders(): number[] {
     return this.commandZoneGRPIds;
   }
 
@@ -123,10 +135,10 @@ class Deck {
    * returns a clone of this deck, not referenced to this instance.
    **/
   clone(): Deck {
-    let main = objectClone(this.mainboard.get());
-    let side = objectClone(this.sideboard.get());
+    const main = objectClone(this.mainboard.get());
+    const side = objectClone(this.sideboard.get());
 
-    let obj = {
+    const obj = {
       name: this.name,
       id: this.id,
       lastUpdated: this.lastUpdated,
@@ -136,7 +148,7 @@ class Deck {
       commandZoneGRPIds: this.commandZoneGRPIds
     };
 
-    let ret = new Deck(objectClone(obj), main, side);
+    const ret = new Deck(objectClone(obj), main, side);
 
     return ret;
   }
@@ -152,12 +164,12 @@ class Deck {
     this._colors = new Colors();
 
     if (countMainboard) {
-      let mainboardColors = this.mainboard.getColors();
+      const mainboardColors = this.mainboard.getColors();
       this._colors.addFromColor(mainboardColors);
     }
 
     if (countSideboard) {
-      let sideboardColors = this.sideboard.getColors();
+      const sideboardColors = this.sideboard.getColors();
       this._colors.addFromColor(sideboardColors);
     }
 
@@ -171,7 +183,7 @@ class Deck {
    * @param countSideboard weter or not to count the sideboard cards.
    */
   getMissingWildcards(countMainboard = true, countSideboard = true) {
-    let missing = {
+    const missing = {
       rare: 0,
       common: 0,
       uncommon: 0,
@@ -182,12 +194,12 @@ class Deck {
 
     if (countMainboard) {
       this.mainboard.get().forEach(cardObj => {
-        let grpid = cardObj.id;
-        let quantity = cardObj.quantity;
-        let card = db.card(grpid);
+        const grpid = cardObj.id;
+        const quantity = cardObj.quantity;
+        const card = db.card(grpid);
         if (card !== undefined) {
-          let rarity = card.rarity;
-          let add = get_wc_missing(grpid, quantity);
+          const rarity = card.rarity;
+          const add = get_wc_missing(grpid, quantity);
           missing[rarity] += add;
         }
       });
@@ -195,12 +207,12 @@ class Deck {
 
     if (countSideboard) {
       this.sideboard.get().forEach(cardObj => {
-        let grpid = cardObj.id;
-        let quantity = cardObj.quantity;
-        let card = db.card(grpid);
+        const grpid = cardObj.id;
+        const quantity = cardObj.quantity;
+        const card = db.card(grpid);
         if (card !== undefined) {
-          let rarity = card.rarity;
-          let add = get_wc_missing(grpid, quantity);
+          const rarity = card.rarity;
+          const add = get_wc_missing(grpid, quantity);
           missing[rarity] += add;
         }
       });
@@ -214,22 +226,22 @@ class Deck {
    **/
   getExportTxt(): string {
     let str = "";
-    let mainList = this.mainboard.removeDuplicates(false);
+    const mainList = this.mainboard.removeDuplicates(false);
     mainList.forEach(function(card) {
-      let grpid = card.id;
-      let card_name = (db.card(grpid) as DbCardData).name;
+      const grpid = card.id;
+      const cardName = (db.card(grpid) as DbCardData).name;
 
-      str += (card.measurable ? card.quantity : 1) + " " + card_name + "\r\n";
+      str += (card.measurable ? card.quantity : 1) + " " + cardName + "\r\n";
     });
 
     str += "\r\n";
 
-    let sideList = this.sideboard.removeDuplicates(false);
+    const sideList = this.sideboard.removeDuplicates(false);
     sideList.forEach(function(card) {
-      let grpid = card.id;
-      let card_name = (db.card(grpid) as DbCardData).name;
+      const grpid = card.id;
+      const cardName = (db.card(grpid) as DbCardData).name;
 
-      str += (card.measurable ? card.quantity : 1) + " " + card_name + "\r\n";
+      str += (card.measurable ? card.quantity : 1) + " " + cardName + "\r\n";
     });
 
     return str;
@@ -240,7 +252,7 @@ class Deck {
    */
   getExportArena(): string {
     let str = "";
-    let listMain = this.mainboard.removeDuplicates(false);
+    const listMain = this.mainboard.removeDuplicates(false);
     listMain.forEach(function(card) {
       let grpid = card.id;
       let cardObj = db.card(grpid) as DbCardData;
@@ -250,18 +262,18 @@ class Deck {
         cardObj = db.card(grpid) as DbCardData;
       }
 
-      let card_name = cardObj.name;
-      let card_set = cardObj.set;
-      let card_cn = cardObj.cid;
-      let card_q = card.measurable ? card.quantity : 1;
+      const cardName = cardObj.name;
+      const cardSet = cardObj.set;
+      const cardCn = cardObj.cid;
+      const cardQ = card.measurable ? card.quantity : 1;
 
-      let set_code = db.sets[card_set].arenacode || get_set_code(card_set);
-      str += `${card_q} ${card_name} (${set_code}) ${card_cn} \r\n`;
+      const setCode = db.sets[cardSet].arenacode || get_set_code(cardSet);
+      str += `${cardQ} ${cardName} (${setCode}) ${cardCn} \r\n`;
     });
 
     str += "\r\n";
 
-    let listSide = this.sideboard.removeDuplicates(false);
+    const listSide = this.sideboard.removeDuplicates(false);
     listSide.forEach(function(card) {
       let grpid = card.id;
       let cardObj = db.card(grpid) as DbCardData;
@@ -271,13 +283,13 @@ class Deck {
         cardObj = db.card(grpid) as DbCardData;
       }
 
-      let card_name = cardObj.name;
-      let card_set = cardObj.set;
-      let card_cn = cardObj.cid;
-      let card_q = card.measurable ? card.quantity : 1;
+      const cardName = cardObj.name;
+      const cardSet = cardObj.set;
+      const cardCn = cardObj.cid;
+      const cardQ = card.measurable ? card.quantity : 1;
 
-      let set_code = db.sets[card_set].arenacode || get_set_code(card_set);
-      str += `${card_q} ${card_name} (${set_code}) ${card_cn} \r\n`;
+      const setCode = db.sets[cardSet].arenacode || get_set_code(cardSet);
+      str += `${cardQ} ${cardName} (${setCode}) ${cardCn} \r\n`;
     });
 
     return str;
@@ -304,7 +316,8 @@ class Deck {
       colors: this.colors.get(),
       tags: this.tags || [],
       custom: this.custom,
-      commandZoneGRPIds: this.commandZoneGRPIds
+      commandZoneGRPIds: this.commandZoneGRPIds,
+      format: this.format
     };
   }
 
@@ -312,7 +325,7 @@ class Deck {
    * Returns a unique string for this deck. (not hashed)
    * @param checkSide weter or not to use the sideboard (default: true)
    */
-  getUniqueString(checkSide = true) {
+  getUniqueString(checkSide = true): string {
     this.sortMainboard(compare_cards);
     this.sortSideboard(compare_cards);
 

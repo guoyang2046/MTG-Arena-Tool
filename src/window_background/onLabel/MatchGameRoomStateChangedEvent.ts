@@ -46,8 +46,26 @@ export default function onLabelMatchGameRoomStateChangedEvent(
         opponentRankingClass: "",
         opponentRankingTier: 1,
         eventId: eventId,
-        matchId: gameRoom.gameRoomConfig.matchId
+        matchId: gameRoom.gameRoomConfig.matchId,
+        // default the types
+        // Not cool but these are not used by us.
+        controllerFabricUri: "",
+        matchEndpointHost: "",
+        matchEndpointPort: 0,
+        opponentIsWotc: false,
+        opponentMythicPercentile: 0,
+        opponentMythicLeaderboardPlace: 0,
+        opponentAvatarSelection: "",
+        opponentCardBackSelection: "",
+        opponentPetSelection: { name: "", variant: "" },
+        avatarSelection: "",
+        cardbackSelection: "",
+        petSelection: { name: "", variant: "" },
+        battlefield: "",
+        opponentCommanderGrpIds: [],
+        commanderGrpIds: []
       };
+
       // Note: one of the only places we still depend on entry.timestamp
       const matchBeginTime = parseWotcTimeFallback(entry.timestamp);
       processMatch(arg, matchBeginTime);
@@ -83,7 +101,7 @@ export default function onLabelMatchGameRoomStateChangedEvent(
     const matchEndTime = parseWotcTimeFallback(entry.timestamp);
     saveMatch(
       gameRoom.finalMatchResult.matchId + "-" + playerData.arenaId,
-      matchEndTime
+      matchEndTime.getTime()
     );
   }
 

@@ -82,7 +82,15 @@ export default function OutLogInfo(entry: Entry): void {
           added: [],
           removed: []
         },
-        deck: {}
+        deck: {
+          commandZoneGRPIds: [],
+          mainDeck: [],
+          sideboard: [],
+          name: "",
+          deckTileId: 0,
+          lastUpdated: new Date(),
+          format: ""
+        }
       };
 
       for (let i = 0; i < globals.initialLibraryInstanceIds.length; i++) {

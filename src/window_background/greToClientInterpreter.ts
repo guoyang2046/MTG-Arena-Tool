@@ -710,7 +710,7 @@ GREMessages.GREMessageType_ConnectResp = function(msg: GreMessage): void {
     msg.connectResp?.deckMessage.deckCards &&
     globals.currentMatch.player.originalDeck == null
   ) {
-    const deck = new Deck({}, msg.connectResp.deckMessage.deckCards);
+    const deck = new Deck(undefined, msg.connectResp.deckMessage.deckCards);
     globals.currentMatch.player.originalDeck = deck;
     globals.currentMatch.player.deck = deck.clone();
     globals.currentMatch.playerCardsLeft = deck.clone();

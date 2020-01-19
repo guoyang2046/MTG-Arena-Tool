@@ -1,7 +1,6 @@
 import inventoryAddDelta from "../inventoryAddDelta";
 import globals from "../globals";
 import saveEconomyTransaction from "../saveEconomyTransaction";
-import minifiedDelta from "../minifiedDelta";
 import LogEntry from "../../types/logDecoder";
 import {
   InventoryUpdate,
@@ -38,8 +37,6 @@ export default function InventoryUpdated(entry: Entry): void {
     if (newDelta.delta) {
       inventoryAddDelta(newDelta.delta);
     }
-    // Reduce the size for storage
-    newDelta.delta = minifiedDelta(newDelta.delta);
     // Do not modify the context from now on.
     saveEconomyTransaction(newDelta);
   });

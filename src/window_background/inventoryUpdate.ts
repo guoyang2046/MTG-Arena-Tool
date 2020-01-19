@@ -1,7 +1,6 @@
 import globals from "./globals";
 import inventoryAddDelta from "./inventoryAddDelta";
 import saveEconomyTransaction from "./saveEconomyTransaction";
-import minifiedDelta from "./minifiedDelta";
 import {
   InventoryUpdate,
   InternalEconomyTransaction
@@ -40,7 +39,7 @@ export default function inventoryUpdate(
     // Reduce the size for storage
     id: "",
     date: globals.logTime,
-    delta: update.delta ? minifiedDelta(update.delta) : {},
+    delta: update.delta ? update.delta : {},
     context,
     subContext: update.context // preserve sub-context object data
   };

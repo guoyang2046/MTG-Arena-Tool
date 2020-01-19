@@ -9,7 +9,7 @@ export interface EntryJson {
   matchEndpointHost: string;
   matchEndpointPort: number;
   opponentScreenName: string;
-  opponentIsWotc: false;
+  opponentIsWotc: boolean;
   matchId: string;
   opponentRankingClass: string;
   opponentRankingTier: number;

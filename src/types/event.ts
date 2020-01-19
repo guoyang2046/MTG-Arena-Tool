@@ -1,4 +1,4 @@
-import { ArenaV3Deck, CardSkin, Format } from "./Deck";
+import { ArenaV3Deck, CardSkin, Format, v3cardsList } from "./Deck";
 
 export interface InternalCourseDeck extends ArenaV3Deck {
   colors?: number[];
@@ -14,8 +14,8 @@ export interface InternalCourse {
 
 export interface CourseDeck {
   commandZoneGRPIds: [];
-  mainDeck: number[];
-  sideboard: number[];
+  mainDeck: v3cardsList;
+  sideboard: v3cardsList;
   isValid: boolean;
   lockedForUse: boolean;
   lockedForEdit: boolean;
@@ -75,16 +75,16 @@ export interface ActiveEvent {
   AllowUncollectedCards: boolean;
 }
 
-interface RankInfo {
-  rankClass: string;
+export interface RankInfo {
+  rankClass: Rank;
   level: number;
   steps: number;
 }
 
 export interface RankRewards {
-  image1: string;
-  image2: string;
-  image3: string;
+  image1: string | null;
+  image2: string | null;
+  image3: string | null;
   prefab: string;
   referenceId: string;
   headerLocKey: string;
@@ -94,27 +94,22 @@ export interface RankRewards {
   availableDate: string;
 }
 
+export enum Rank {
+  Bronze,
+  Silver,
+  Gold,
+  Platinum,
+  Diamond,
+  Mythic
+}
+
 export interface SeasonAndRankDetail {
   currentSeason: {
     seasonOrdinal: number;
     seasonStartTime: string;
     seasonEndTime: string;
-    seasonLimitedRewards: {
-      Bronze: RankRewards;
-      Silver: RankRewards;
-      Gold: RankRewards;
-      Platinum: RankRewards;
-      Diamond: RankRewards;
-      Mythic: RankRewards;
-    };
-    seasonConstructedRewards: {
-      Bronze: RankRewards;
-      Silver: RankRewards;
-      Gold: RankRewards;
-      Platinum: RankRewards;
-      Diamond: RankRewards;
-      Mythic: RankRewards;
-    };
+    seasonLimitedRewards: Map<Rank, RankRewards>;
+    seasonConstructedRewards: Map<Rank, RankRewards>;
     minMatches: number;
   };
   limitedRankInfo: RankInfo[];
