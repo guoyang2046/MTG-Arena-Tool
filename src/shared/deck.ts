@@ -109,6 +109,10 @@ class Deck {
     return this.name;
   }
 
+  setName(name: string): void {
+    this.name = name;
+  }
+
   /**
    * Returns if this deck has a commander (0) or the number of commanders it has.
    */
