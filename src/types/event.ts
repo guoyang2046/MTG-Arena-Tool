@@ -57,7 +57,7 @@ export interface ActiveEvent {
   StartTime: string;
   LockedTime: string;
   ClosedTime: string;
-  Parameters: {}; // Missing type here
+  Parameters: any; // Missing type here
   Group: string;
   PastEntries: string | null;
   DisplayPriority: number;
