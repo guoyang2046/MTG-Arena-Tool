@@ -1,4 +1,4 @@
-import { ArenaV3Deck, CardSkin, Format, v3cardsList } from "./Deck";
+import { ArenaV3Deck, CardSkin, v3cardsList } from "./Deck";
 
 export interface InternalCourseDeck extends ArenaV3Deck {
   colors?: number[];
@@ -24,7 +24,7 @@ export interface CourseDeck {
   id: string;
   name: string;
   description: string;
-  format: Format;
+  format: string;
   deckTileId: number;
   cardBack: string;
   lastUpdated: string;
