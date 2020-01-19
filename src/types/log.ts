@@ -11,7 +11,7 @@ export interface LogInfo {
   jsonrpc: string;
   method: string;
   params: LogParams;
-  id: "193";
+  id: string;
 }
 
 interface LogInfoParams {
