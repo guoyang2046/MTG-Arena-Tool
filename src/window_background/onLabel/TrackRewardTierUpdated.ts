@@ -18,6 +18,7 @@ interface Entry extends LogEntry {
 
 // TrackRewardTier.Updated
 // Is this used still? I need a sample of the log entry
+// like.. REALLY need a sample..
 export default function TrackRewardTierUpdated(entry: Entry): void {
   const json = entry.json();
   if (!json) return;

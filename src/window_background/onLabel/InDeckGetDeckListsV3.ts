@@ -1,14 +1,10 @@
 import convertDeckFromV3 from "../convertDeckFromV3";
 import LogEntry from "../../types/logDecoder";
-import { InternalCourseDeck } from "../../types/event";
+import { CourseDeck } from "../../types/event";
 import InDeckGetDeckLists from "./InDeckGetDeckLists";
 
-interface EntryJson {
-  CourseDeck: InternalCourseDeck;
-}
-
 interface Entry extends LogEntry {
-  json: () => EntryJson;
+  json: () => CourseDeck[];
 }
 
 export default function InDeckGetDeckListsV3(entry: Entry): void {

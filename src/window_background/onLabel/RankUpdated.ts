@@ -3,7 +3,7 @@ import playerData from "../../shared/player-data";
 import globals from "../globals";
 import { setData } from "../backgroundUtil";
 import LogEntry from "../../types/logDecoder";
-import { RankUpdate } from "../../types/rank";
+import { RankUpdate, InternalRankUpdate } from "../../types/rank";
 
 interface Entry extends LogEntry {
   json: () => RankUpdate;
@@ -12,30 +12,35 @@ interface Entry extends LogEntry {
 export default function RankUpdated(entry: Entry): void {
   const json = entry.json();
   if (!json) return;
-  json.id = entry.hash;
-  json.date = json.timestamp;
-  json.timestamp = globals.logTime;
-  json.lastMatchId = globals.currentMatch.matchId;
-  json.eventId = globals.currentMatch.eventId;
+
+  const newJson: InternalRankUpdate = {
+    ...json,
+    id: entry.hash,
+    date: globals.logTime,
+    timestamp: globals.logTime.getTime(),
+    lastMatchId: globals.currentMatch.matchId,
+    eventId: globals.currentMatch.eventId
+  };
+
   const rank = { ...playerData.rank };
 
-  // json.wasLossProtected
-  // json.seasonOrdinal
-  const updateType = json.rankUpdateType.toLowerCase();
+  // newJson.wasLossProtected
+  // newJson.seasonOrdinal
+  const updateType = newJson.rankUpdateType.toLowerCase();
 
-  rank[updateType].rank = json.newClass;
-  rank[updateType].tier = json.newLevel;
-  rank[updateType].step = json.newStep;
-  rank[updateType].seasonOrdinal = json.seasonOrdinal;
+  rank[updateType].rank = newJson.newClass;
+  rank[updateType].tier = newJson.newLevel;
+  rank[updateType].step = newJson.newStep;
+  rank[updateType].seasonOrdinal = newJson.seasonOrdinal;
 
   const seasonal_rank = playerData.addSeasonalRank(
-    json,
-    json.seasonOrdinal,
+    newJson,
+    newJson.seasonOrdinal,
     updateType
   );
 
   const httpApi = require("../httpApi");
-  httpApi.httpSetSeasonal(json);
+  httpApi.httpSetSeasonal(newJson);
 
   setData({ rank, seasonal_rank });
   playerDb.upsert("", "rank", rank);

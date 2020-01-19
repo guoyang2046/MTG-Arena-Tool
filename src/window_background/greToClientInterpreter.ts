@@ -571,7 +571,7 @@ function getOppUsedCards(): number[] {
   return cardsUsed;
 }
 
-function onlyUnique(value: any, index: number, self: any): boolean {
+function onlyUnique(value: string, index: number, self: string[]): boolean {
   return self.indexOf(value) === index;
 }
 
@@ -707,7 +707,7 @@ GREMessages.GREMessageType_QueuedGameStateMessage = function(
 
 GREMessages.GREMessageType_ConnectResp = function(msg: GreMessage): void {
   if (
-    msg.connectResp.deckMessage.deckCards &&
+    msg.connectResp?.deckMessage.deckCards &&
     globals.currentMatch.player.originalDeck == null
   ) {
     const deck = new Deck({}, msg.connectResp.deckMessage.deckCards);

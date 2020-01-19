@@ -34,7 +34,7 @@ let initialLibraryInstanceIds: number[] = [];
 
 let instanceToCardIdMap: any = {};
 
-let logReadStart: Date;
+let logReadStart: Date = new Date();
 
 let logTime = new Date();
 

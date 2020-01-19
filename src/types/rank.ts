@@ -10,3 +10,11 @@ export interface RankUpdate {
   wasLossProtected: boolean;
   rankUpdateType: string;
 }
+
+export interface InternalRankUpdate extends RankUpdate {
+  id: string;
+  date: Date;
+  timestamp: number;
+  lastMatchId: string;
+  eventId: string;
+}

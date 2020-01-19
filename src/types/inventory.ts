@@ -31,6 +31,7 @@ export interface InventoryUpdate {
   context: {
     source: string;
     sourceId: string;
+    subSource?: string;
   };
 }
 

@@ -11,7 +11,7 @@ function updateDeck(force: boolean): void {
   const nd = new Date();
   if (
     (globals.debugLog || force || !globals.firstPass) &&
-    nd - lastDeckUpdate > 1000
+    nd.getTime() - lastDeckUpdate.getTime() > 1000
   ) {
     forceDeckUpdate();
 

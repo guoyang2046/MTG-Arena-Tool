@@ -2,7 +2,10 @@ import globals from "./globals";
 import inventoryAddDelta from "./inventoryAddDelta";
 import saveEconomyTransaction from "./saveEconomyTransaction";
 import minifiedDelta from "./minifiedDelta";
-import { InventoryUpdate } from "../types/inventory";
+import {
+  InventoryUpdate,
+  InternalEconomyTransaction
+} from "../types/inventory";
 import { Entry as PostMatchUpdateEntry } from "./onLabel/PostMatchUpdate";
 const sha1 = require("js-sha1");
 
@@ -32,17 +35,17 @@ export default function inventoryUpdate(
     inventoryAddDelta(update.delta);
   }
 
-  const transaction = {
+  const transaction: InternalEconomyTransaction = {
     ...update,
     // Reduce the size for storage
+    id: "",
+    date: globals.logTime,
     delta: update.delta ? minifiedDelta(update.delta) : {},
     context,
     subContext: update.context // preserve sub-context object data
   };
   // Construct a unique ID
   transaction.id = sha1(JSON.stringify(transaction) + entry.hash);
-  // Add missing data
-  transaction.date = globals.logTime;
 
   saveEconomyTransaction(transaction);
 }
