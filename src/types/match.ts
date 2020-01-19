@@ -3,7 +3,7 @@ import { Result } from "./greInterpreter";
 interface ReservedPlayer {
   userId: string;
   playerName: string;
-  systemSeatId: 1;
+  systemSeatId: number;
   teamId: 1;
   connectionInfo: {
     connectionState: string;
