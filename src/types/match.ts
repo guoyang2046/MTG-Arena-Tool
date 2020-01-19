@@ -4,7 +4,7 @@ interface ReservedPlayer {
   userId: string;
   playerName: string;
   systemSeatId: number;
-  teamId: 1;
+  teamId: number;
   connectionInfo: {
     connectionState: string;
   };
