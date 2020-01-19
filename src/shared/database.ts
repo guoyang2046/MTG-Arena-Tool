@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable no-console */
 import path from "path";
 import { app, remote, ipcRenderer as ipc } from "electron";
 import fs from "fs";
@@ -88,7 +90,7 @@ class Database {
     this.handleSetDb(null, defaultDb);
   }
 
-  static getInstance() {
+  static getInstance(): Database {
     if (!Database.instance) {
       Database.instance = new Database();
     }
@@ -96,17 +98,16 @@ class Database {
     return Database.instance;
   }
 
-  handleSetActiveEvents(_event: Event, arg: string) {
+  handleSetActiveEvents(_event: Event, arg: string): void {
     if (!arg) return;
     try {
       this.activeEvents = JSON.parse(arg);
     } catch (e) {
       console.log("Error parsing JSON:", arg);
-      return false;
     }
   }
 
-  handleSetDb(_event: Event | null, arg: string) {
+  handleSetDb(_event: Event | null, arg: string): void {
     try {
       this.metadata = JSON.parse(arg) as Metadata;
     } catch (e) {
@@ -114,7 +115,7 @@ class Database {
     }
   }
 
-  updateCache(data: string) {
+  updateCache(data: string): void {
     try {
       if (cachePath) {
         fs.writeFileSync(cachePath, data);
@@ -124,12 +125,12 @@ class Database {
     }
   }
 
-  handleSetRewardResets(_event: Event, rewardsDate: RewardsDate) {
+  handleSetRewardResets(_event: Event, rewardsDate: RewardsDate): void {
     this.rewards_daily_ends = new Date(rewardsDate.daily);
     this.rewards_weekly_ends = new Date(rewardsDate.weekly);
   }
 
-  handleSetSeason(_event: Event, season: Season) {
+  handleSetSeason(_event: Event, season: Season): void {
     try {
       this.season = season;
     } catch (e) {
@@ -137,7 +138,7 @@ class Database {
     }
   }
 
-  handleSetPreconDecks(_event: Event, arg: ArenaV3Deck[]) {
+  handleSetPreconDecks(_event: Event, arg: ArenaV3Deck[]): void {
     if (!arg || !arg.length) return;
     try {
       this.preconDecks = {};
@@ -145,7 +146,6 @@ class Database {
       // console.log(this.preconDecks);
     } catch (e) {
       console.log("Error parsing JSON:", arg);
-      return false;
     }
   }
 
@@ -239,7 +239,7 @@ class Database {
     return setCodes;
   }
 
-  get version() {
+  get version(): number {
     return this.metadata ? this.metadata.version : 0;
   }
 
@@ -252,11 +252,11 @@ class Database {
       return undefined;
     }
 
-    let numId = typeof id === "number" ? id : parseInt(id);
+    const numId = typeof id === "number" ? id : parseInt(id);
     return this.metadata.cards[numId] || undefined;
   }
 
-  event(id: string) {
+  event(id: string): string | boolean {
     return this.events[id] || false;
   }
 
@@ -269,7 +269,7 @@ class Database {
   //   return false;
   // }
 
-  getRankSteps(rank: Rank, tier: number, isLimited: boolean) {
+  getRankSteps(rank: Rank, tier: number, isLimited: boolean): number {
     if (!this.season) return 0;
     let rankInfo: RankClassInfo[];
     if (isLimited) {
@@ -287,8 +287,8 @@ class Database {
     return 0;
   }
 
-  cardFromArt(artId: number | string) {
-    let numArtId = typeof artId === "number" ? artId : parseInt(artId);
+  cardFromArt(artId: number | string): DbCardData | boolean {
+    const numArtId = typeof artId === "number" ? artId : parseInt(artId);
     const matches = this.cardList.filter(card => card.artid === numArtId);
     return matches.length ? matches[0] : false;
   }
