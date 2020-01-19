@@ -89,7 +89,8 @@ export default function OutLogInfo(entry: Entry): void {
           name: "",
           deckTileId: 0,
           lastUpdated: new Date(),
-          format: ""
+          format: "",
+          type: "SerializedDeck"
         }
       };
 

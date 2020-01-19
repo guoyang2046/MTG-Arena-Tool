@@ -1,9 +1,9 @@
 import playerData from "../shared/player-data";
 import { setData } from "./backgroundUtil";
-import { InventoryUpdate } from "../types/inventory";
+import { InternalEconomyTransaction } from "../types/inventory";
 
 export default function inventoryAddDelta(
-  delta: InventoryUpdate["delta"]
+  delta: InternalEconomyTransaction["delta"]
 ): void {
   const economy = playerData.economy;
   economy.gems += delta.gemsDelta;
@@ -12,7 +12,7 @@ export default function inventoryAddDelta(
   // Update new cards obtained.
   const cardsNew = playerData.cardsNew;
   const cards = playerData.cards;
-  delta.cardsAdded.forEach((grpId: number) => {
+  delta.cardsAdded?.forEach((grpId: number) => {
     // Add to inventory
     if (cards.cards[grpId] === undefined) {
       cards.cards[grpId] = 1;

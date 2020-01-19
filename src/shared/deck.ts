@@ -9,8 +9,9 @@ import {
 } from "./util";
 import { DEFAULT_TILE } from "./constants";
 
-import { anyCardsList, SerializedDeck } from "../types/Deck";
+import { anyCardsList, SerializedDeck, ArenaV3Deck } from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
+import { CourseDeck } from "../types/event";
 
 const defaultDeck: SerializedDeck = {
   commandZoneGRPIds: [],
@@ -19,7 +20,8 @@ const defaultDeck: SerializedDeck = {
   name: "",
   deckTileId: 0,
   lastUpdated: new Date(),
-  format: ""
+  format: "",
+  type: "SerializedDeck"
 };
 
 class Deck {
@@ -37,7 +39,7 @@ class Deck {
   public format: string;
 
   constructor(
-    mtgaDeck: SerializedDeck = defaultDeck,
+    mtgaDeck: SerializedDeck | ArenaV3Deck | CourseDeck = defaultDeck,
     main: anyCardsList = [],
     side: anyCardsList = []
   ) {
@@ -50,17 +52,27 @@ class Deck {
     this.sideboard = new CardsList(mtgaDeck.sideboard);
     this.commandZoneGRPIds = mtgaDeck.commandZoneGRPIds || [];
     this.name = mtgaDeck.name || "";
-    this.id = mtgaDeck.id || "";
-    this.lastUpdated = mtgaDeck.lastUpdated || new Date();
     this.tile = mtgaDeck.deckTileId ? mtgaDeck.deckTileId : DEFAULT_TILE;
     this._colors = this.getColors();
-    this.tags = mtgaDeck.tags || [mtgaDeck.format as string];
-    this.custom = mtgaDeck.custom || false;
-    this.archetype = mtgaDeck.archetype || "";
     this.format = mtgaDeck.format || "";
+    this.id = mtgaDeck.id || "";
 
-    //this.sortMainboard(compare_cards);
-    //this.sortSideboard(compare_cards);
+    if (mtgaDeck.type !== "SerializedDeck") {
+      this.tags = [mtgaDeck.format];
+    } else {
+      this.tags = [mtgaDeck.format] || mtgaDeck.tags;
+    }
+
+    this.custom =
+      mtgaDeck.type == "SerializedDeck" ? mtgaDeck.custom || false : false;
+
+    this.archetype =
+      mtgaDeck.type == "SerializedDeck" ? mtgaDeck.archetype || "" : "";
+
+    this.lastUpdated =
+      mtgaDeck.type == "SerializedDeck"
+        ? mtgaDeck.lastUpdated || new Date()
+        : new Date(mtgaDeck.lastUpdated);
 
     return this;
   }
@@ -321,7 +333,8 @@ class Deck {
       tags: this.tags || [],
       custom: this.custom,
       commandZoneGRPIds: this.commandZoneGRPIds,
-      format: this.format
+      format: this.format,
+      type: "SerializedDeck"
     };
   }
 

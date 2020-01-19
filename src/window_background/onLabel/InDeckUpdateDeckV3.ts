@@ -1,4 +1,4 @@
-import { CardObject } from "../../types/Deck";
+import { CardObject, SerializedDeck, v2cardsList } from "../../types/Deck";
 import convertDeckFromV3 from "../convertDeckFromV3";
 import db from "../../shared/database";
 import LogEntry from "../../types/logDecoder";
@@ -17,8 +17,8 @@ interface Changes {
   date: Date;
   changesMain: CardObject[];
   changesSide: CardObject[];
-  previousMain: ArenaV3Deck;
-  previousSide: ArenaV3Deck;
+  previousMain: v2cardsList;
+  previousSide: v2cardsList;
 }
 
 interface TempCardObject extends CardObject {
@@ -27,17 +27,17 @@ interface TempCardObject extends CardObject {
 
 // REVIEW Deck.UpdateDeckV3 in the logs
 export default function InDeckUpdateDeckV3(entry: Entry): void {
-  let json = entry.json();
+  const json = entry.json();
   if (!json) return;
 
-  json = convertDeckFromV3(json);
-  const _deck = playerData.deck(json.id);
+  const entryDeck = convertDeckFromV3(json);
+  const _deck = playerData.deck(json.id) as SerializedDeck;
 
   const changeId = entry.hash;
   const deltaDeck: Changes = {
     id: changeId,
-    deckId: _deck.id,
-    date: json.lastUpdated,
+    deckId: _deck.id || "",
+    date: new Date(json.lastUpdated),
     changesMain: [],
     changesSide: [],
     previousMain: _deck.mainDeck,
@@ -49,7 +49,7 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
     const cardObj = db.card(card.id);
     if (cardObj !== undefined) {
       let diff = 0 - card.quantity;
-      json.mainDeck.forEach((cardB: TempCardObject) => {
+      entryDeck.mainDeck.forEach((cardB: TempCardObject) => {
         const cardObjB = db.card(cardB.id);
         if (cardObjB !== undefined) {
           if (cardObj.name === cardObjB.name) {
@@ -65,7 +65,7 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
     }
   });
 
-  json.mainDeck.forEach(card => {
+  entryDeck.mainDeck.forEach(card => {
     if (card.existed === undefined) {
       deltaDeck.changesMain.push({ id: card.id, quantity: card.quantity });
     }
@@ -76,7 +76,7 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
     const cardObj = db.card(card.id);
     if (cardObj !== undefined) {
       let diff = 0 - card.quantity;
-      json.sideboard.forEach(cardB => {
+      entryDeck.sideboard.forEach(cardB => {
         const cardObjB = db.card(cardB.id);
         if (cardObjB !== undefined) {
           if (cardObj.name === cardObjB.name) {
@@ -92,7 +92,7 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
     }
   });
 
-  json.sideboard.forEach(card => {
+  entryDeck.sideboard.forEach(card => {
     if (card.existed === undefined) {
       deltaDeck.changesSide.push({ id: card.id, quantity: card.quantity });
     }
@@ -113,8 +113,8 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
     setData({ deck_changes, deck_changes_index });
   }
 
-  const deckData = { ..._deck, ...json };
-  const decks = { ...playerData.decks, [json.id]: deckData };
-  playerDb.upsert("decks", json.id, deckData);
+  const deckData = { ..._deck, ...entryDeck };
+  const decks = { ...playerData.decks, [entryDeck.id]: deckData };
+  playerDb.upsert("decks", entryDeck.id, deckData);
   setData({ decks });
 }

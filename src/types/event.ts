@@ -28,6 +28,7 @@ export interface CourseDeck {
   deckTileId: number;
   cardBack: string;
   lastUpdated: string;
+  type: "CourseDeck";
 }
 
 export interface ModuleInstanceData {

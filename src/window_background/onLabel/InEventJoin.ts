@@ -4,6 +4,7 @@ import { get_deck_colors } from "../../shared/util";
 import LogEntry from "../../types/logDecoder";
 import selectDeck from "../selectDeck";
 import { InternalCourseDeck } from "../../types/event";
+import Deck from "../../shared/deck";
 
 interface EntryJson {
   CourseDeck: InternalCourseDeck;
@@ -18,8 +19,8 @@ export default function InEventJoin(entry: Entry): void {
   if (!json) return;
 
   if (json.CourseDeck) {
-    json.CourseDeck.colors = get_deck_colors(json.CourseDeck);
-    addCustomDeck(json.CourseDeck);
-    selectDeck(convertDeckFromV3(json));
+    const deck = new Deck(json.CourseDeck);
+    addCustomDeck(deck);
+    selectDeck(deck);
   }
 }

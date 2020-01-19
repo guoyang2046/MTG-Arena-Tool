@@ -1,22 +1,29 @@
-// Might conflict with the class?
 export interface ArenaV3Deck extends BasicDeck {
+  mainDeck: v3cardsList;
+  sideboard: v3cardsList;
   isValid: boolean;
   lockedForUse: boolean;
   lockedForEdit: boolean;
+  lastUpdated: string;
   reourceId?: string;
   cardSkins: CardSkin[];
   description: string;
   cardBack: null | string;
   id: string;
+  type: "ArenaV3Deck";
 }
 
 export interface SerializedDeck extends BasicDeck {
+  mainDeck: v2cardsList;
+  sideboard: v2cardsList;
+  lastUpdated: Date;
   custom?: boolean;
   tags?: string[];
   id?: string;
   colors?: number[];
   archetype?: string;
   archived?: boolean;
+  type: "SerializedDeck";
 }
 
 export interface BasicDeck {
@@ -25,7 +32,6 @@ export interface BasicDeck {
   sideboard: anyCardsList;
   name: string;
   deckTileId: number;
-  lastUpdated: Date;
   format: string;
 }
 

@@ -6,9 +6,8 @@ import { setData } from "../backgroundUtil";
 import { playerDb } from "../../shared/db/LocalDatabase";
 import addCustomDeck from "../addCustomDeck";
 import selectDeck from "../selectDeck";
-import { get_deck_colors } from "../../shared/util";
-import convertDeckFromV3 from "../convertDeckFromV3";
 import playerData from "../../shared/player-data";
+import Deck from "../../shared/deck";
 
 interface EntryJson {
   Id: string;
@@ -53,14 +52,13 @@ export default function InEventGetPlayerCourseV2(entry: Entry): void {
   delete json.Id;
 
   if (newJson.CourseDeck) {
-    newJson.CourseDeck = convertDeckFromV3(json.CourseDeck);
-    newJson.CourseDeck.colors = get_deck_colors(json.CourseDeck);
-    addCustomDeck(json.CourseDeck);
+    const deck = new Deck(json.CourseDeck);
+    addCustomDeck(deck);
     //newJson.date = timestamp();
     //console.log(newJson.CourseDeck, newJson.CourseDeck.colors)
     const httpApi = require("../httpApi");
     httpApi.httpSubmitCourse(newJson);
     saveCourse(newJson);
-    selectDeck(newJson);
+    selectDeck(deck);
   }
 }

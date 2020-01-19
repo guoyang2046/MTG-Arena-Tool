@@ -28,7 +28,7 @@ export default function trackUpdate(
     orbCountDiff.currentOrbCount !== undefined &&
     orbCountDiff.currentOrbCount - orbCountDiff.oldOrbCount
   ) {
-    const data = { trackName, trackTier, orbCountDiff };
+    const data = { delta: {}, trackName, trackTier, orbCountDiff };
     inventoryUpdate(entry, data);
   }
 }
