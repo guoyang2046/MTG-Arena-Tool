@@ -15,7 +15,7 @@ import db from "../shared/database";
 import pd from "../shared/player-data";
 import { normalApproximationInterval } from "../shared/statsFns";
 import { getReadableEvent, getRecentDeckName } from "../shared/util";
-import { SerializedDeck } from "../shared/types/Deck";
+import { SerializedDeck } from "../types/Deck";
 import { ExtendedMatchData } from "../window_background/data";
 
 export const dateMaxValid = (a: any, b: any): any => {

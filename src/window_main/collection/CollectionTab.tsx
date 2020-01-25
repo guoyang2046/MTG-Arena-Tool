@@ -7,7 +7,7 @@ import { DRAFT_RANKS } from "../../shared/constants";
 import db from "../../shared/database";
 import { createDiv } from "../../shared/dom-fns";
 import pd from "../../shared/player-data";
-import { DbCardData } from "../../shared/types/Metadata";
+import { DbCardData } from "../../types/Metadata";
 import {
   getMissingCardCounts,
   openScryfallCard,
