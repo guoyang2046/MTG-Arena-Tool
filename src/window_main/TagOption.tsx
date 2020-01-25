@@ -9,12 +9,9 @@ export interface TagOptionProps {
   archCounts?: { [key: string]: number };
 }
 
-export default function TagOption(props: TagOptionProps) {
+export default function TagOption(props: TagOptionProps): JSX.Element {
   const { tag, showCount, archCounts } = props;
-  if (tag === Aggregator.DEFAULT_TAG) return tag;
-  if (tag === Aggregator.DEFAULT_ARCH) return tag;
   const color = getTagColor(tag);
-  const margins = "margin: 5px; margin-right: 30px;";
   const style: React.CSSProperties = {
     whiteSpace: "nowrap",
     backgroundColor: color,

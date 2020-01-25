@@ -50,19 +50,14 @@ export interface AggregatorStats {
 }
 
 export default class Aggregator {
-  // Default filter values
-  public static DEFAULT_DECK = "All Decks";
+  // Event-related filter values
   public static DEFAULT_EVENT = "All Events";
-  public static DEFAULT_TAG = "All Tags";
-  public static DEFAULT_ARCH = "All Archetypes";
+  public static ALL_EVENT_TRACKS = "All Event Tracks";
   // Ranked filter values
   public static RANKED_CONST = "Ranked Constructed";
   public static RANKED_DRAFT = "Ranked Limited";
   // Draft-related filter values
   public static ALL_DRAFTS = "All Drafts";
-  public static DRAFT_REPLAYS = "Draft Replays";
-  // Event-related filter values
-  public static ALL_EVENT_TRACKS = "All Event Tracks";
   // Archetype filter values
   public static NO_ARCH = "No Archetype";
 
@@ -97,7 +92,7 @@ export default class Aggregator {
     return {
       matchIds: undefined,
       eventId: Aggregator.DEFAULT_EVENT,
-      deckId: Aggregator.DEFAULT_DECK,
+      deckId: undefined,
       date: pd.settings.last_date_filter,
       showArchived: false
     };
@@ -131,7 +126,7 @@ export default class Aggregator {
     const formatList = [...formatSet];
     formatList.sort((a, b) => counts[b] - counts[a]);
 
-    return [Aggregator.DEFAULT_TAG, ...tagList, ...formatList];
+    return [...tagList, ...formatList];
   }
 
   private _decks: SerializedDeck[] = [];
@@ -186,14 +181,9 @@ export default class Aggregator {
     return isAfter(new Date(date), dateFilter);
   }
 
-  filterDeck(deck: any): boolean {
+  filterDeck({ id }: { id?: string }): boolean {
     const { deckId } = this.filters;
-    if (!deck) return deckId === Aggregator.DEFAULT_DECK;
-    return (
-      deckId === Aggregator.DEFAULT_DECK ||
-      deckId === deck.id ||
-      this.validDecks.has(deck.id)
-    );
+    return !deckId || deckId === id || (!!id && this.validDecks.has(id));
   }
 
   filterEvent(eventId: string): boolean {
@@ -282,7 +272,7 @@ export default class Aggregator {
       arch => arch !== Aggregator.NO_ARCH
     );
     archList.sort();
-    this.archs = [Aggregator.DEFAULT_ARCH, Aggregator.NO_ARCH, ...archList];
+    this.archs = [Aggregator.NO_ARCH, ...archList];
 
     for (const deckId in this.deckMap) {
       const deck = pd.deck(deckId) ?? this.deckMap[deckId];
@@ -451,7 +441,6 @@ export default class Aggregator {
       Aggregator.RANKED_CONST,
       Aggregator.RANKED_DRAFT,
       Aggregator.ALL_DRAFTS,
-      Aggregator.DRAFT_REPLAYS,
       ...this._eventIds
     ];
   }
@@ -467,10 +456,7 @@ export default class Aggregator {
   }
 
   get decks(): SerializedDeck[] {
-    return [
-      { id: Aggregator.DEFAULT_DECK, name: Aggregator.DEFAULT_DECK },
-      ...this._decks
-    ];
+    return [...this._decks];
   }
 
   get tags(): string[] {

@@ -198,7 +198,7 @@ export function getDefaultColorFilter(): ColorFilter {
 }
 
 export function filterDeckByColors(
-  deck: SerializedDeck | null,
+  deck: { colors?: number[] } | null,
   _colors: ColorFilter
 ): boolean {
   if (!deck) return true;

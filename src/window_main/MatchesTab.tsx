@@ -24,7 +24,7 @@ import {
 } from "./renderer-util";
 import StatsPanel from "./stats-panel";
 
-const { DEFAULT_ARCH, NO_ARCH, RANKED_CONST, RANKED_DRAFT } = Aggregator;
+const { NO_ARCH, RANKED_CONST, RANKED_DRAFT } = Aggregator;
 const tagPrompt = "Set archetype";
 
 function openMatchDetails(id: string | number): void {
@@ -39,7 +39,7 @@ function openMatchDetails(id: string | number): void {
 
 function addTag(matchid: string, tag: string): void {
   const match = pd.match(matchid);
-  if ([tagPrompt, NO_ARCH, DEFAULT_ARCH].includes(tag)) return;
+  if ([tagPrompt, NO_ARCH].includes(tag)) return;
   if (match.tags?.includes(tag)) return;
   ipcSend("add_matches_tag", { matchid, tag });
 }
@@ -265,9 +265,7 @@ function getMatchesData(aggregator: Aggregator): MatchTableData[] {
 function getTotalAggData(): [string[], TagCounts] {
   const totalAgg = new Aggregator();
   const allTags = [
-    ...(totalAgg.archs ?? []).filter(
-      arch => arch !== NO_ARCH && arch !== DEFAULT_ARCH
-    ),
+    ...(totalAgg.archs ?? []).filter(arch => arch !== NO_ARCH),
     ...Object.values(db.archetypes).map(arch => arch.name)
   ];
   const tags = [...new Set(allTags)].map(tag => {
