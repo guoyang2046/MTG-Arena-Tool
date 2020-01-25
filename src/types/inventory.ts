@@ -33,6 +33,12 @@ export interface InventoryUpdate {
     sourceId: string;
     subSource?: string;
   };
+  trackName: string;
+  trackTier: number;
+  orbCountDiff: {
+    oldOrbCount: number;
+    currentOrbCount: number;
+  };
 }
 
 export interface InternalEconomyTransaction {
@@ -59,7 +65,7 @@ export interface InternalEconomyTransaction {
   id: string;
   date: Date;
   context: string;
-  subContext: {
+  subContext?: {
     source: string;
     sourceId: string;
   };
