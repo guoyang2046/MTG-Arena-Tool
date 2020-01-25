@@ -11,12 +11,12 @@ const sha1 = require("js-sha1");
 // REVIEW
 export default function inventoryUpdate(
   entry: PostMatchUpdateEntry,
-  update: InventoryUpdate
+  update: Partial<InventoryUpdate>
 ): void {
   // combine sub-context with parent context
   // console.log("inventoryUpdate", entry, update);
   let context = "PostMatch.Update";
-  if (update.context && update.context.source) {
+  if (update.context?.source) {
     // combine sub-context with parent context
     context += "." + update.context.source;
     if (update.context.sourceId && update.context.source === "QuestReward") {
@@ -25,7 +25,7 @@ export default function inventoryUpdate(
   }
 
   // This probably comes from our old economy formats
-  if (update.context && update.context.subSource) {
+  if (update.context?.subSource) {
     // combine sub-sub-context with parent context
     context += "." + update.context.subSource;
   }
@@ -39,7 +39,7 @@ export default function inventoryUpdate(
     // Reduce the size for storage
     id: "",
     date: globals.logTime,
-    delta: update.delta ? update.delta : {},
+    delta: update.delta ?? {},
     context,
     subContext: update.context // preserve sub-context object data
   };
