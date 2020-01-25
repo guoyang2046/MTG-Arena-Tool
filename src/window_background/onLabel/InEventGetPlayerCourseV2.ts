@@ -1,17 +1,17 @@
 // PROBABLY DEPRECATED
-import globals from "../globals";
-import LogEntry from "../../types/logDecoder";
-import { CourseDeck, InternalCourse } from "../../types/event";
-import { setData } from "../backgroundUtil";
 import { playerDb } from "../../shared/db/LocalDatabase";
-import addCustomDeck from "../addCustomDeck";
-import selectDeck from "../selectDeck";
-import playerData from "../../shared/player-data";
 import Deck from "../../shared/deck";
+import playerData from "../../shared/player-data";
+import { InternalCourse, InternalCourseDeck } from "../../types/event";
+import LogEntry from "../../types/logDecoder";
+import addCustomDeck from "../addCustomDeck";
+import { setData } from "../backgroundUtil";
+import globals from "../globals";
+import selectDeck from "../selectDeck";
 
 interface EntryJson {
   Id: string;
-  CourseDeck: CourseDeck;
+  CourseDeck: InternalCourseDeck;
 }
 
 interface Entry extends LogEntry {
