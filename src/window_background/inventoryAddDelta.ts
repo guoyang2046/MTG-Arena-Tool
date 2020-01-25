@@ -1,13 +1,13 @@
 import playerData from "../shared/player-data";
 import { setData } from "./backgroundUtil";
-import { InternalEconomyTransaction } from "../types/inventory";
+import { InventoryDelta } from "../types/inventory";
 
 export default function inventoryAddDelta(
-  delta: InternalEconomyTransaction["delta"]
+  delta: Partial<InventoryDelta>
 ): void {
   const economy = playerData.economy;
-  economy.gems += delta.gemsDelta;
-  economy.gold += delta.goldDelta;
+  economy.gems += delta.gemsDelta ?? 0;
+  economy.gold += delta.goldDelta ?? 0;
 
   // Update new cards obtained.
   const cardsNew = playerData.cardsNew;
@@ -27,11 +27,11 @@ export default function inventoryAddDelta(
     }
   });
 
-  economy.vault += delta.vaultProgressDelta;
-  economy.wcCommon += delta.wcCommonDelta;
-  economy.wcUncommon += delta.wcUncommonDelta;
-  economy.wcRare += delta.wcRareDelta;
-  economy.wcMythic += delta.wcMythicDelta;
+  economy.vault += delta.vaultProgressDelta ?? 0;
+  economy.wcCommon += delta.wcCommonDelta ?? 0;
+  economy.wcUncommon += delta.wcUncommonDelta ?? 0;
+  economy.wcRare += delta.wcRareDelta ?? 0;
+  economy.wcMythic += delta.wcMythicDelta ?? 0;
   // console.log("cardsNew", cardsNew);
   setData({ economy, cardsNew, cards });
 }

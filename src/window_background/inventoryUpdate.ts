@@ -39,7 +39,7 @@ export default function inventoryUpdate(
     // Reduce the size for storage
     id: "",
     date: globals.logTime,
-    delta: update.delta ?? {},
+    delta: update.delta,
     context,
     subContext: update.context // preserve sub-context object data
   };

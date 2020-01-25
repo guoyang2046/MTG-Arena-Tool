@@ -5,70 +5,63 @@ export interface AetherizedCard {
   set: string;
 }
 
-export interface InventoryUpdate {
-  delta: {
-    gemsDelta: number;
-    goldDelta: number;
-    boosterDelta: number[];
-    cardsAdded: number[];
-    decksAdded: [];
-    starterDecksAdded: [];
-    vanityItemsAdded: [];
-    vanityItemsRemoved: [];
-    draftTokensDelta: number;
-    sealedTokensDelta: number;
-    vaultProgressDelta: number;
-    wcCommonDelta: number;
-    wcUncommonDelta: number;
-    wcRareDelta: number;
-    wcMythicDelta: number;
-    artSkinsAdded: [];
-    artSkinsRemoved: [];
-    voucherItemsDelta: [];
-  };
+export interface InventoryDelta {
+  gemsDelta: number;
+  goldDelta: number;
+  boosterDelta: { count: number }[];
+  cardsAdded: number[];
+  decksAdded: [];
+  starterDecksAdded: [];
+  vanityItemsAdded: [];
+  vanityItemsRemoved: [];
+  draftTokensDelta: number;
+  sealedTokensDelta: number;
+  vaultProgressDelta: number;
+  wcCommonDelta: number;
+  wcUncommonDelta: number;
+  wcRareDelta: number;
+  wcMythicDelta: number;
+  artSkinsAdded: [];
+  artSkinsRemoved: [];
+  voucherItemsDelta: [];
+}
+
+interface InventoryUpdateBase {
   aetherizedCards: AetherizedCard[];
   xpGained: number;
-  context: {
-    source: string;
-    sourceId: string;
-    subSource?: string;
-  };
   trackName: string;
   trackTier: number;
+  trackDiff: {
+    currentLevel: number;
+    oldLevel: number;
+  };
   orbCountDiff: {
     oldOrbCount: number;
     currentOrbCount: number;
   };
 }
 
-export interface InternalEconomyTransaction {
-  delta: {
-    gemsDelta?: number;
-    goldDelta?: number;
-    boosterDelta?: number[];
-    cardsAdded?: number[];
-    decksAdded?: [];
-    starterDecksAdded?: [];
-    vanityItemsAdded?: [];
-    vanityItemsRemoved?: [];
-    draftTokensDelta?: number;
-    sealedTokensDelta?: number;
-    vaultProgressDelta?: number;
-    wcCommonDelta?: number;
-    wcUncommonDelta?: number;
-    wcRareDelta?: number;
-    wcMythicDelta?: number;
-    artSkinsAdded?: [];
-    artSkinsRemoved?: [];
-    voucherItemsDelta?: [];
+export interface InventoryUpdate extends InventoryUpdateBase {
+  delta: InventoryDelta;
+  context: {
+    source: string;
+    sourceId: string;
+    subSource?: string;
   };
+}
+
+export interface InternalEconomyTransaction
+  extends Partial<InventoryUpdateBase> {
   id: string;
   date: Date;
   context: string;
+  originalContext?: string;
   subContext?: {
     source: string;
     sourceId: string;
   };
+  delta?: Partial<InventoryDelta>;
+  archived?: boolean;
 }
 
 export interface Pet {
