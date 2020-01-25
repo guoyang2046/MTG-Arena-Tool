@@ -239,8 +239,8 @@ ipc.on("save_user_settings", function(event, settings) {
   // console.log("save_user_settings");
   ipcSend("show_loading");
   let refresh = true;
-  if (settings.skip_refresh) {
-    delete settings.skip_refresh;
+  if (settings.skipRefresh) {
+    delete settings.skipRefresh;
     refresh = false;
   }
   syncSettings(settings, refresh);
@@ -364,7 +364,7 @@ ipc.on("add_tag", (event, arg) => {
   playerDb.upsert("", "decks_tags", decks_tags);
 });
 
-ipc.on("delete_history_tag", (event, arg) => {
+ipc.on("delete_matches_tag", (event, arg) => {
   const { matchid, tag } = arg;
   const match = playerData.match(matchid);
   if (!match || !tag) return;
@@ -379,7 +379,7 @@ ipc.on("delete_history_tag", (event, arg) => {
   playerDb.upsert(matchid, "tags", tags);
 });
 
-ipc.on("add_history_tag", (event, arg) => {
+ipc.on("add_matches_tag", (event, arg) => {
   const { matchid, tag } = arg;
   const match = playerData.match(matchid);
   if (!match || !tag) return;

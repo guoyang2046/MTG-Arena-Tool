@@ -54,7 +54,7 @@ async function migrateIfNecessary(): Promise<void> {
     // ensure blended user settings migrate
     setData(__playerData, false);
     syncSettings(settings, false);
-    ipcSend("save_user_settings", { skip_refresh: true }, IPC_BACKGROUND);
+    ipcSend("save_user_settings", { skipRefresh: true }, IPC_BACKGROUND);
     const dataToMigrate = playerData.data;
     const totalDocs = Object.values(dataToMigrate).length;
     ipcUpgradeProgress(0);
