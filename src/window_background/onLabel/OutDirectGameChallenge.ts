@@ -10,7 +10,7 @@ interface EntryJson {
     opponentDisplayName: string;
     playFirst: boolean;
     bo3: boolean;
-  }
+  };
 }
 
 interface Entry extends LogEntry {

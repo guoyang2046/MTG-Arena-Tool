@@ -389,7 +389,8 @@ function finishLoading(): void {
     });
     globals.firstPass = false;
     logReadEnd = new Date();
-    const logReadElapsed = (logReadEnd.getTime() - globals.logReadStart.getTime()) / 1000;
+    const logReadElapsed =
+      (logReadEnd.getTime() - globals.logReadStart.getTime()) / 1000;
     ipcSend("ipc_log", `Log read in ${logReadElapsed}s`);
 
     ipcSend("popup", {

@@ -8,7 +8,9 @@ interface Entry extends LogEntry {
   json: () => PlayerProgression;
 }
 
-export default function onLabelInProgressionGetPlayerProgress(entry: Entry): void {
+export default function onLabelInProgressionGetPlayerProgress(
+  entry: Entry
+): void {
   const json = entry.json();
   if (!json || !json.activeBattlePass) return;
   const activeTrack = json.activeBattlePass;

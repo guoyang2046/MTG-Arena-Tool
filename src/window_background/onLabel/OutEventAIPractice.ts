@@ -20,4 +20,3 @@ export default function OutEventAIPractice(entry: Entry): void {
   const parsedDeck = JSON.parse(json.params.deck) as ArenaV3Deck;
   selectDeck(new Deck(parsedDeck));
 }
-

@@ -7,7 +7,9 @@ interface Entry extends LogEntry {
   json: () => SeasonAndRankDetail;
 }
 
-export default function onLabelInEventGetSeasonAndRankDetail(entry: Entry): void {
+export default function onLabelInEventGetSeasonAndRankDetail(
+  entry: Entry
+): void {
   const json = entry.json();
   if (!json) return;
   db.handleSetSeason(json);

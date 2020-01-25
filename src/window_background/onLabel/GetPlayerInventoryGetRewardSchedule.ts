@@ -29,7 +29,9 @@ interface Entry extends LogEntry {
   json: () => EntryJson;
 }
 
-export default function GetPlayerInventoryGetRewardSchedule(entry: Entry): void {
+export default function GetPlayerInventoryGetRewardSchedule(
+  entry: Entry
+): void {
   const json = entry.json();
   if (!json) return;
 
