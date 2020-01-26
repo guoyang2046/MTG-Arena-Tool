@@ -1,11 +1,12 @@
 import React from "react";
 import { DEFAULT_TILE } from "../../../shared/constants";
+import { InternalMatch } from "../../../types/match";
 import ListItem from "../../listItem";
 import { attachMatchData } from "../../renderer-util";
 import { renderNewTag, renderTagBubble } from "../display";
 import { useLegacyRenderer } from "../tables/hooks";
 import { TagCounts } from "../tables/types";
-import { MatchesTableRowProps, SerializedMatch } from "./types";
+import { MatchesTableRowProps } from "./types";
 
 const tagPrompt = "Set archetype";
 
@@ -13,7 +14,7 @@ const byId = (id: string): HTMLElement | null => document.getElementById(id);
 
 function renderData(
   container: HTMLElement,
-  match: SerializedMatch,
+  match: InternalMatch,
   tags: TagCounts,
   openMatchCallback: (matchId: string | number) => void,
   archiveCallback: (id: string | number) => void,

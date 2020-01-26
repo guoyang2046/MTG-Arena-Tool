@@ -7,9 +7,10 @@ import db from "../shared/database";
 import { createDiv } from "../shared/dom-fns";
 import pd from "../shared/player-data";
 import { getReadableEvent } from "../shared/util";
+import { InternalMatch } from "../types/match";
 import Aggregator, { AggregatorFilters } from "./aggregator";
 import MatchesTable from "./components/matches/MatchesTable";
-import { MatchTableData, SerializedMatch } from "./components/matches/types";
+import { MatchTableData } from "./components/matches/types";
 import { useAggregatorAndSidePanel } from "./components/tables/hooks";
 import { TagCounts } from "./components/tables/types";
 import { openMatch } from "./match-details";
@@ -206,7 +207,7 @@ function updateStatsPanel(
 
 function getMatchesData(aggregator: Aggregator): MatchTableData[] {
   return pd.matchList
-    .filter((match: SerializedMatch) => {
+    .filter((match: InternalMatch) => {
       // legacy filter logic
       if (match == undefined) {
         return false;
@@ -220,7 +221,7 @@ function getMatchesData(aggregator: Aggregator): MatchTableData[] {
       return aggregator.filterMatch(match);
     })
     .map(
-      (match: SerializedMatch): MatchTableData => {
+      (match: InternalMatch): MatchTableData => {
         const timestamp = new Date(match.date ?? NaN);
         const colors = match.playerDeck.colors ?? [];
         const oppColors = match.oppDeck.colors ?? [];

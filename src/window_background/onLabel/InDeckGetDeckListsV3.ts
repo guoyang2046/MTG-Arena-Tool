@@ -1,9 +1,9 @@
+import { ArenaV3Deck } from "../../types/Deck";
 import LogEntry from "../../types/logDecoder";
-import { CourseDeck } from "../../types/event";
 import InDeckGetDeckLists from "./InDeckGetDeckLists";
 
 interface Entry extends LogEntry {
-  json: () => CourseDeck[];
+  json: () => ArenaV3Deck[];
 }
 
 export default function InDeckGetDeckListsV3(entry: Entry): void {

@@ -1,10 +1,9 @@
-import { SerializedDeck } from "../types/Deck";
+import { InternalDeck, ArenaV3Deck } from "../types/Deck";
 import Deck from "../shared/deck";
-import { CourseDeck } from "../types/event";
 
 export default function convertCourseDeck(
-  courseDeck: CourseDeck
-): SerializedDeck {
+  courseDeck: ArenaV3Deck
+): InternalDeck {
   const deck = new Deck(courseDeck);
   return deck.getSave();
 }

@@ -1,34 +1,33 @@
-import { ArenaV3Deck, CardSkin, v3cardsList } from "./Deck";
+import { ArenaV3Deck, InternalDeck } from "./Deck";
 
-export interface InternalCourseDeck extends ArenaV3Deck {
-  colors?: number[];
+export interface EventInstanceData {
+  CurrentWins: number;
+  CurrentLosses?: number;
+  ProcessedMatchIds?: string[];
 }
 
-export interface InternalCourse {
+export interface InternalEvent {
   Id?: string;
-  _id: string;
-  id?: string;
-  date: Date;
-  CourseDeck: InternalCourseDeck;
-}
-
-export interface CourseDeck {
-  commandZoneGRPIds: [];
-  mainDeck: v3cardsList;
-  sideboard: v3cardsList;
-  isValid: boolean;
-  lockedForUse: boolean;
-  lockedForEdit: boolean;
-  resourceId: string;
-  cardSkins: CardSkin[];
+  _id?: string;
   id: string;
-  name: string;
-  description: string;
-  format: string;
-  deckTileId: number;
-  cardBack: string;
-  lastUpdated: string;
-  type: "CourseDeck";
+  CourseDeck: InternalDeck;
+  archived?: boolean;
+  CurrentEventState: string | number;
+  custom: boolean;
+  date: string;
+  InternalEventName: string;
+  ModuleInstanceData: {
+    WinLossGate?: {
+      CurrentWins: number;
+      CurrentLosses: number;
+      ProcessedMatchIds: string[];
+    };
+    WinNoGate?: {
+      CurrentWins: number;
+      ProcessedMatchIds: string[];
+    };
+  };
+  type: "Event";
 }
 
 export interface ModuleInstanceData {
@@ -44,7 +43,7 @@ export interface PlayerCourse {
   CurrentEventState: string;
   CurrentModule: string;
   CardPool: number[] | null;
-  CourseDeck: CourseDeck;
+  CourseDeck: ArenaV3Deck;
   PreviousOpponents: string[];
 }
 

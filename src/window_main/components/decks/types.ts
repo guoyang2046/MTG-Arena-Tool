@@ -1,5 +1,5 @@
 import { CellProps, TableState } from "react-table";
-import { SerializedDeck } from "../../../types/Deck";
+import { InternalDeck } from "../../../types/Deck";
 import { AggregatorFilters, AggregatorStats } from "../../aggregator";
 import {
   TableControlsProps,
@@ -15,7 +15,7 @@ export interface MissingWildcards {
 }
 
 export interface DecksData
-  extends SerializedDeck,
+  extends InternalDeck,
     AggregatorStats,
     MissingWildcards {
   winrate100: number;

@@ -1,4 +1,4 @@
-import { CardObject, SerializedDeck, v2cardsList } from "../../types/Deck";
+import { CardObject, InternalDeck, v2cardsList } from "../../types/Deck";
 import convertDeckFromV3 from "../convertDeckFromV3";
 import db from "../../shared/database";
 import LogEntry from "../../types/logDecoder";
@@ -31,7 +31,7 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
   if (!json) return;
 
   const entryDeck = convertDeckFromV3(json);
-  const _deck = playerData.deck(json.id) as SerializedDeck;
+  const _deck = playerData.deck(json.id) as InternalDeck;
 
   const changeId = entry.hash;
   const deltaDeck: Changes = {

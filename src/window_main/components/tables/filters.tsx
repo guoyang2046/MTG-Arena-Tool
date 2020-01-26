@@ -3,7 +3,7 @@ import matchSorter from "match-sorter";
 import React from "react";
 import { ColumnInstance, FilterValue, Row } from "react-table";
 import { COLORS_ALL, COLORS_BRIEF } from "../../../shared/constants";
-import { SerializedDeck } from "../../../types/Deck";
+import { InternalDeck } from "../../../types/Deck";
 import ManaFilter, { ColorFilter, ManaFilterKeys } from "../../ManaFilter";
 import {
   CheckboxContainer,

@@ -6,7 +6,7 @@ import Deck from "../shared/deck";
 import playerData from "../shared/player-data.js";
 import { objectClone } from "../shared/util";
 import { MatchData, matchDataDefault } from "../types/currentMatch";
-import { ExtendedMatchData } from "../types/match";
+import { InternalMatch } from "../types/match";
 import getOpponentDeck from "./getOpponentDeck";
 import globals from "./globals";
 import { EntryJson as MatchCreatedEvent } from "./onLabel/EventMatchCreated";
@@ -94,10 +94,10 @@ function matchIsLimited(match: MatchData): boolean {
 // Given match data calculates derived data for storage.
 // This is called when a match is complete.
 export function completeMatch(
-  match: ExtendedMatchData,
+  match: InternalMatch,
   matchData: MatchData,
   matchEndTime: number
-): ExtendedMatchData | undefined {
+): InternalMatch | undefined {
   if (matchData.eventId === "AIBotMatch") return;
 
   const mode = matchIsLimited(matchData) ? "limited" : "constructed";

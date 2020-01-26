@@ -1,13 +1,11 @@
-import addCustomDeck from "../addCustomDeck";
-import convertDeckFromV3 from "../convertDeckFromV3";
-import { get_deck_colors } from "../../shared/util";
-import LogEntry from "../../types/logDecoder";
-import selectDeck from "../selectDeck";
-import { InternalCourseDeck } from "../../types/event";
 import Deck from "../../shared/deck";
+import { InternalDeck } from "../../types/Deck";
+import LogEntry from "../../types/logDecoder";
+import addCustomDeck from "../addCustomDeck";
+import selectDeck from "../selectDeck";
 
 interface EntryJson {
-  CourseDeck: InternalCourseDeck;
+  CourseDeck: InternalDeck;
 }
 
 interface Entry extends LogEntry {

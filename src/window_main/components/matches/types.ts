@@ -1,5 +1,5 @@
 import { TableState } from "react-table";
-import { ExtendedMatchData } from "../../../types/match";
+import { InternalMatch } from "../../../types/match";
 import { AggregatorFilters } from "../../aggregator";
 import {
   TableControlsProps,
@@ -8,13 +8,7 @@ import {
   TagCounts
 } from "../tables/types";
 
-export interface SerializedMatch extends ExtendedMatchData {
-  archived?: boolean;
-  set: string;
-  type: "match";
-}
-
-export interface MatchTableData extends SerializedMatch, TableData {
+export interface MatchTableData extends InternalMatch, TableData {
   archivedSortVal: number;
   custom: boolean;
   colors: number[];

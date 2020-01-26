@@ -1,19 +1,17 @@
-import db from "./database";
+import { anyCardsList, ArenaV3Deck, InternalDeck } from "../types/Deck";
+import { DbCardData } from "../types/Metadata";
 import CardsList from "./cardsList";
 import Colors from "./colors";
+import { DEFAULT_TILE } from "./constants";
+import db from "./database";
 import {
   compare_cards,
   get_set_code,
   get_wc_missing,
   objectClone
 } from "./util";
-import { DEFAULT_TILE } from "./constants";
 
-import { anyCardsList, SerializedDeck, ArenaV3Deck } from "../types/Deck";
-import { DbCardData } from "../types/Metadata";
-import { CourseDeck } from "../types/event";
-
-const defaultDeck: SerializedDeck = {
+const defaultDeck: Partial<InternalDeck> = {
   commandZoneGRPIds: [],
   mainDeck: [],
   sideboard: [],
@@ -21,7 +19,7 @@ const defaultDeck: SerializedDeck = {
   deckTileId: 0,
   lastUpdated: new Date(),
   format: "",
-  type: "SerializedDeck"
+  type: "InternalDeck"
 };
 
 class Deck {
@@ -39,7 +37,7 @@ class Deck {
   public format: string;
 
   constructor(
-    mtgaDeck: SerializedDeck | ArenaV3Deck | CourseDeck = defaultDeck,
+    mtgaDeck: InternalDeck | ArenaV3Deck | Partial<InternalDeck> = defaultDeck,
     main: anyCardsList = [],
     side: anyCardsList = []
   ) {
@@ -57,22 +55,22 @@ class Deck {
     this.format = mtgaDeck.format || "";
     this.id = mtgaDeck.id || "";
 
-    if (mtgaDeck.type !== "SerializedDeck") {
-      this.tags = [mtgaDeck.format];
+    if (mtgaDeck.type !== "InternalDeck") {
+      this.tags = [mtgaDeck.format ?? "unknown"];
     } else {
-      this.tags = [mtgaDeck.format] || mtgaDeck.tags;
+      this.tags = [mtgaDeck.format ?? "unknown"] || mtgaDeck.tags;
     }
 
     this.custom =
-      mtgaDeck.type == "SerializedDeck" ? mtgaDeck.custom || false : false;
+      mtgaDeck.type == "InternalDeck" ? mtgaDeck.custom || false : false;
 
     this.archetype =
-      mtgaDeck.type == "SerializedDeck" ? mtgaDeck.archetype || "" : "";
+      mtgaDeck.type == "InternalDeck" ? mtgaDeck.archetype || "" : "";
 
     this.lastUpdated =
-      mtgaDeck.type == "SerializedDeck"
+      mtgaDeck.type == "InternalDeck"
         ? mtgaDeck.lastUpdated || new Date()
-        : new Date(mtgaDeck.lastUpdated);
+        : new Date(mtgaDeck.lastUpdated + "");
 
     return this;
   }
@@ -314,14 +312,14 @@ class Deck {
   /**
    * Returns a copy of this deck as an object.
    */
-  getSave(): SerializedDeck {
+  getSave(): InternalDeck {
     return objectClone(this.getSaveRaw());
   }
 
   /**
    * Returns a copy of this deck as an object, but maintains variables references.
    */
-  getSaveRaw(): SerializedDeck {
+  getSaveRaw(): InternalDeck {
     return {
       mainDeck: this.mainboard.get(),
       sideboard: this.sideboard.get(),
@@ -334,7 +332,7 @@ class Deck {
       custom: this.custom,
       commandZoneGRPIds: this.commandZoneGRPIds,
       format: this.format,
-      type: "SerializedDeck"
+      type: "InternalDeck"
     };
   }
 

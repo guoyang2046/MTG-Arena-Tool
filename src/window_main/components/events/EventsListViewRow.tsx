@@ -6,6 +6,7 @@ import db from "../../../shared/database";
 import { createDiv, queryElementsByClass } from "../../../shared/dom-fns";
 import pd from "../../../shared/player-data";
 import { toMMSS } from "../../../shared/util";
+import { InternalMatch } from "../../../types/match";
 import { openDraft } from "../../draft-details";
 import ListItem from "../../listItem";
 import { openMatch } from "../../match-details";
@@ -17,7 +18,6 @@ import {
   localTimeSince,
   toggleArchived
 } from "../../renderer-util";
-import { SerializedMatch } from "../matches/types";
 import { useLegacyRenderer } from "../tables/hooks";
 import { TableViewRowProps } from "../tables/types";
 import { EventTableData } from "./types";
@@ -49,7 +49,7 @@ function attachEventData(listItem: ListItem, event: EventTableData): void {
   const deckNameDiv = createDiv(["list_deck_name"], displayName);
   listItem.leftTop.appendChild(deckNameDiv);
 
-  event.CourseDeck.colors.forEach(color => {
+  event.CourseDeck.colors?.forEach(color => {
     const m = createDiv(["mana_s20", `mana_${MANA[color]}`]);
     listItem.leftBottom.appendChild(m);
   });
@@ -96,7 +96,7 @@ function attachEventData(listItem: ListItem, event: EventTableData): void {
 
 // Given the data of a match will return a data row to be
 // inserted into one of the screens.
-function createMatchRow(match: SerializedMatch): HTMLElement {
+function createMatchRow(match: InternalMatch): HTMLElement {
   let tileGrpid, clickCallback;
   if (match.type == "match") {
     tileGrpid = match.playerDeck.deckTileId ?? DEFAULT_TILE;

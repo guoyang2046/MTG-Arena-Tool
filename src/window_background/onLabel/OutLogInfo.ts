@@ -83,6 +83,7 @@ export default function OutLogInfo(entry: Entry): void {
           removed: []
         },
         deck: {
+          id: "",
           commandZoneGRPIds: [],
           mainDeck: [],
           sideboard: [],
@@ -90,7 +91,7 @@ export default function OutLogInfo(entry: Entry): void {
           deckTileId: 0,
           lastUpdated: new Date(),
           format: "",
-          type: "SerializedDeck"
+          type: "InternalDeck"
         }
       };
 

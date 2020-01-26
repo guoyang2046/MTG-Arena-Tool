@@ -10,20 +10,24 @@ export interface ArenaV3Deck extends BasicDeck {
   description: string;
   cardBack: null | string;
   id: string;
+  commandZoneGRPIds: [];
+  name: string;
+  format: string;
+  deckTileId: number;
   type: "ArenaV3Deck";
 }
 
-export interface SerializedDeck extends BasicDeck {
+export interface InternalDeck extends BasicDeck {
   mainDeck: v2cardsList;
   sideboard: v2cardsList;
   lastUpdated: Date;
   custom?: boolean;
   tags?: string[];
-  id?: string;
+  id: string;
   colors?: number[];
   archetype?: string;
   archived?: boolean;
-  type: "SerializedDeck";
+  type: "InternalDeck";
 }
 
 export interface BasicDeck {

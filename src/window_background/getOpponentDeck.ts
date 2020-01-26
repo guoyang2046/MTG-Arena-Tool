@@ -1,7 +1,7 @@
 import globals from "./globals";
 import db from "../shared/database";
 import Deck from "../shared/deck";
-import { SerializedDeck } from "../types/Deck";
+import { InternalDeck } from "../types/Deck";
 import { DbCardData, Archetype } from "../types/Metadata";
 
 function calculateDeviation(values: number[]): number {
@@ -58,7 +58,7 @@ function getBestArchetype(deck: Deck): string {
   return bestMatch;
 }
 
-function getOpponentDeck(): SerializedDeck {
+function getOpponentDeck(): InternalDeck {
   const _deck = new Deck(undefined, globals.currentMatch.oppCardsUsed, []);
   _deck.getMainboard().removeDuplicates(true);
   _deck.colors;

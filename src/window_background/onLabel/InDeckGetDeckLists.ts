@@ -1,15 +1,15 @@
-import { CourseDeck } from "../../types/event";
+import playerData from "../../shared/player-data";
+import { ArenaV3Deck } from "../../types/Deck";
 import LogEntry from "../../types/logDecoder";
 import { setData } from "../backgroundUtil";
-import playerData from "../../shared/player-data";
 
 interface Entry extends LogEntry {
-  json: () => CourseDeck[];
+  json: () => ArenaV3Deck[];
 }
 
 export default function InDeckGetDeckLists(
   entry: Entry,
-  json: CourseDeck[] = []
+  json: ArenaV3Deck[] = []
 ): void {
   if (json.length == 0 && entry) json = entry.json();
   if (json.length == 0) return;

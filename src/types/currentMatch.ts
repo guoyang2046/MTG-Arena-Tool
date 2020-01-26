@@ -12,7 +12,7 @@ import {
   Timer,
   Result
 } from "./greInterpreter";
-import { SerializedDeck } from "./Deck";
+import { InternalDeck } from "./Deck";
 
 export interface MatchPlayer {
   seat: number;
@@ -234,5 +234,5 @@ export interface MatchGameStats {
     added: string[];
     removed: string[];
   };
-  deck: SerializedDeck;
+  deck: InternalDeck;
 }

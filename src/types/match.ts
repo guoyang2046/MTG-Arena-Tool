@@ -1,5 +1,5 @@
 import Deck from "../shared/deck";
-import { SerializedDeck } from "./Deck";
+import { InternalDeck } from "./Deck";
 import { Result } from "./greInterpreter";
 
 interface ReservedPlayer {
@@ -85,7 +85,7 @@ export interface PlayerMatchData {
   commanderGrpIds: number[];
 }
 
-export interface ExtendedPlayerMatchData {
+export interface InternalPlayer {
   userid: string;
   win: number;
   step?: number;
@@ -98,10 +98,10 @@ export interface ExtendedPlayerMatchData {
   commanderGrpIds: any;
 }
 
-export interface ExtendedMatchData {
+export interface InternalMatch {
   draws: number;
-  playerDeck: SerializedDeck;
-  oppDeck: SerializedDeck;
+  playerDeck: InternalDeck;
+  oppDeck: InternalDeck;
   tags: any;
   date: number;
   onThePlay: number;
@@ -112,6 +112,9 @@ export interface ExtendedMatchData {
   toolRunFromSource: boolean;
   id: string;
   duration: number;
-  player: ExtendedPlayerMatchData;
-  opponent: ExtendedPlayerMatchData;
+  player: InternalPlayer;
+  opponent: InternalPlayer;
+  archived?: boolean;
+  set: string;
+  type: "match";
 }

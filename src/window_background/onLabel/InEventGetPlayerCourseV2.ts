@@ -2,24 +2,19 @@
 import { playerDb } from "../../shared/db/LocalDatabase";
 import Deck from "../../shared/deck";
 import playerData from "../../shared/player-data";
-import { InternalCourse, InternalCourseDeck } from "../../types/event";
+import { InternalEvent } from "../../types/event";
 import LogEntry from "../../types/logDecoder";
 import addCustomDeck from "../addCustomDeck";
 import { setData } from "../backgroundUtil";
 import globals from "../globals";
 import selectDeck from "../selectDeck";
 
-interface EntryJson {
-  Id: string;
-  CourseDeck: InternalCourseDeck;
-}
-
 interface Entry extends LogEntry {
-  json: () => EntryJson;
+  json: () => Partial<InternalEvent>;
 }
 
-function saveCourse(json: InternalCourse): void {
-  const id = json._id;
+function saveCourse(json: InternalEvent): void {
+  const id = json._id ?? "";
   delete json._id;
   json.id = id;
   const eventData = {
@@ -44,10 +39,10 @@ export default function InEventGetPlayerCourseV2(entry: Entry): void {
   if (!json) return;
   if (json.Id == "00000000-0000-0000-0000-000000000000") return;
 
-  const newJson: InternalCourse = {
+  const newJson: Partial<InternalEvent> = {
     ...json,
-    _id: json.Id,
-    date: globals.logTime
+    _id: json.Id ?? "",
+    date: globals.logTime.toISOString()
   };
   delete json.Id;
 
@@ -58,7 +53,7 @@ export default function InEventGetPlayerCourseV2(entry: Entry): void {
     //console.log(newJson.CourseDeck, newJson.CourseDeck.colors)
     const httpApi = require("../httpApi");
     httpApi.httpSubmitCourse(newJson);
-    saveCourse(newJson);
+    saveCourse(newJson as InternalEvent);
     selectDeck(deck);
   }
 }

@@ -1,8 +1,8 @@
-import selectDeck from "../selectDeck";
-import LogEntry from "../../types/logDecoder";
-import { PlayerCourse } from "../../types/event";
-import convertCourseDeck from "../convertCourseDeck";
 import Deck from "../../shared/deck";
+import { PlayerCourse } from "../../types/event";
+import LogEntry from "../../types/logDecoder";
+import convertCourseDeck from "../convertCourseDeck";
+import selectDeck from "../selectDeck";
 
 interface Entry extends LogEntry {
   json: () => PlayerCourse;
