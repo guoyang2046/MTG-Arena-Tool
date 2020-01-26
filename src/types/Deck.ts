@@ -23,6 +23,15 @@ export interface InternalDeck extends BasicDeck {
   type: "InternalDeck";
 }
 
+export function isInternalDeck(deck: any): deck is InternalDeck {
+  return (
+    deck &&
+    typeof deck === "object" &&
+    "type" in deck &&
+    (deck as any).type === "InternalDeck"
+  );
+}
+
 export interface BasicDeck {
   id: string;
   commandZoneGRPIds?: number[];

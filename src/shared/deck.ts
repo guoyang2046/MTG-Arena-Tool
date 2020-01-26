@@ -1,4 +1,9 @@
-import { anyCardsList, ArenaV3Deck, InternalDeck } from "../types/Deck";
+import {
+  anyCardsList,
+  ArenaV3Deck,
+  InternalDeck,
+  isInternalDeck
+} from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
 import CardsList from "./cardsList";
 import Colors from "./colors";
@@ -55,17 +60,15 @@ class Deck {
     this.format = mtgaDeck.format || "";
     this.id = mtgaDeck.id || "";
 
-    if (mtgaDeck.type !== "InternalDeck") {
+    if (!isInternalDeck(mtgaDeck)) {
       this.tags = [mtgaDeck.format ?? "unknown"];
     } else {
       this.tags = [mtgaDeck.format ?? "unknown"] || mtgaDeck.tags;
     }
 
-    this.custom =
-      mtgaDeck.type == "InternalDeck" ? mtgaDeck.custom || false : false;
+    this.custom = isInternalDeck(mtgaDeck) ? mtgaDeck.custom || false : false;
 
-    this.archetype =
-      mtgaDeck.type == "InternalDeck" ? mtgaDeck.archetype || "" : "";
+    this.archetype = isInternalDeck(mtgaDeck) ? mtgaDeck.archetype || "" : "";
 
     this.lastUpdated = mtgaDeck.lastUpdated
       ? new Date(mtgaDeck.lastUpdated)
