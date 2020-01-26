@@ -16,7 +16,7 @@ import pd from "../shared/player-data";
 import { normalApproximationInterval } from "../shared/statsFns";
 import { getReadableEvent, getRecentDeckName } from "../shared/util";
 import { SerializedDeck } from "../types/Deck";
-import { ExtendedMatchData } from "../window_background/data";
+import { ExtendedMatchData } from "../types/match";
 
 export const dateMaxValid = (a: any, b: any): any => {
   const aValid = isValid(a);

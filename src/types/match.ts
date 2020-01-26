@@ -1,3 +1,5 @@
+import Deck from "../shared/deck";
+import { SerializedDeck } from "./Deck";
 import { Result } from "./greInterpreter";
 
 interface ReservedPlayer {
@@ -65,4 +67,51 @@ interface MatchGameRoomStateTypeMatchCompleted extends GameRoomInfo {
     matchCompletedReason: string;
     resultList: Result[];
   };
+}
+
+export interface PlayerMatchData {
+  seat: number;
+  deck: Deck;
+  life: number;
+  turn: number;
+  name: string;
+  id: string;
+  rank: string;
+  tier: number;
+  originalDeck?: Deck;
+  percentile?: number;
+  leaderboardPlace?: number;
+  cards?: any[];
+  commanderGrpIds: number[];
+}
+
+export interface ExtendedPlayerMatchData {
+  userid: string;
+  win: number;
+  step?: number;
+  seat: number;
+  tier: number;
+  name: string;
+  rank: string;
+  percentile?: number;
+  leaderboardPlace?: number;
+  commanderGrpIds: any;
+}
+
+export interface ExtendedMatchData {
+  draws: number;
+  playerDeck: SerializedDeck;
+  oppDeck: SerializedDeck;
+  tags: any;
+  date: number;
+  onThePlay: number;
+  eventId: string;
+  bestOf: number;
+  gameStats: any[];
+  toolVersion: number;
+  toolRunFromSource: boolean;
+  id: string;
+  duration: number;
+  player: ExtendedPlayerMatchData;
+  opponent: ExtendedPlayerMatchData;
 }

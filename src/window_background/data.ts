@@ -1,66 +1,18 @@
-import _ from "lodash";
-import database from "../shared/database";
 import electron from "electron";
+import _ from "lodash";
+import { DEFAULT_TILE } from "../shared/constants";
+import database from "../shared/database";
+import Deck from "../shared/deck";
+import playerData from "../shared/player-data.js";
+import { objectClone } from "../shared/util";
+import { MatchData, matchDataDefault } from "../types/currentMatch";
+import { ExtendedMatchData } from "../types/match";
 import getOpponentDeck from "./getOpponentDeck";
 import globals from "./globals";
-import playerData from "../shared/player-data.js";
-import { DEFAULT_TILE } from "../shared/constants";
 import { EntryJson as MatchCreatedEvent } from "./onLabel/EventMatchCreated";
-import { objectClone } from "../shared/util";
-import Deck from "../shared/deck";
-import { SerializedDeck } from "../types/Deck";
-import { MatchData, matchDataDefault } from "../types/currentMatch";
+
 // Generate objects using default templates.
 // Nothing in here should call IPC functions
-
-// Match Creation
-export interface PlayerMatchData {
-  seat: number;
-  deck: Deck;
-  life: number;
-  turn: number;
-  name: string;
-  id: string;
-  rank: string;
-  tier: number;
-  originalDeck?: Deck;
-  percentile?: number;
-  leaderboardPlace?: number;
-  cards?: any[];
-  commanderGrpIds: number[];
-}
-
-export interface ExtendedPlayerMatchData {
-  userid: string;
-  win: number;
-  step?: number;
-  seat: number;
-  tier: number;
-  name: string;
-  rank: string;
-  percentile?: number;
-  leaderboardPlace?: number;
-  commanderGrpIds: any;
-}
-
-export interface ExtendedMatchData {
-  draws: number;
-  playerDeck: SerializedDeck;
-  oppDeck: SerializedDeck;
-  tags: any;
-  date: number;
-  onThePlay: number;
-  eventId: string;
-  bestOf: number;
-  gameStats: any[];
-  toolVersion: number;
-  toolRunFromSource: boolean;
-  id: string;
-  duration: number;
-  player: ExtendedPlayerMatchData;
-  opponent: ExtendedPlayerMatchData;
-}
-
 export function createMatch(
   json: MatchCreatedEvent,
   matchBeginTime: Date
