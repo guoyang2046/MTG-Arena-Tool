@@ -7,6 +7,10 @@ import {
   TagCounts
 } from "../tables/types";
 
+export interface CardCounts {
+  [key: string]: number;
+}
+
 export interface MissingWildcards {
   rare: number;
   common: number;
