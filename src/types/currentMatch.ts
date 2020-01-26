@@ -1,4 +1,4 @@
-import { Chances } from "./decks";
+import { Chances } from "./Chances";
 import Deck from "../shared/deck";
 import {
   GameInfo,

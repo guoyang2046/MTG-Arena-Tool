@@ -11,7 +11,7 @@ import {
   SettingsData
 } from "./overlayUtil";
 import { DbCardData } from "../types/Metadata";
-import { Chances } from "../types/decks";
+import { Chances } from "../types/Chances";
 
 const NO_IMG_URL = "./images/nocard.png";
 

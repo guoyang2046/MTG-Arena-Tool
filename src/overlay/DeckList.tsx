@@ -25,7 +25,7 @@ import { CardObject } from "../types/Deck";
 import { OverlaySettingsData } from "./overlayUtil";
 import SampleSizePanel from "./SampleSizePanel";
 import { DbCardData } from "../types/Metadata";
-import { Chances } from "../types/decks";
+import { Chances } from "../types/Chances";
 
 const landsCard = {
   id: 100,
