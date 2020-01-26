@@ -231,7 +231,7 @@ function getMatchesData(aggregator: Aggregator): MatchTableData[] {
           custom: true,
           colors,
           colorSortVal: colors.join(""),
-          deckId: match.playerDeck.id ?? "",
+          deckId: match.playerDeck.id,
           deckName: match.playerDeck.name ?? "",
           deckFormat: match.playerDeck.format ?? "",
           eventName: getReadableEvent(match.eventId),

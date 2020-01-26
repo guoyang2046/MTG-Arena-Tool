@@ -22,7 +22,7 @@ function renderData(
   container.innerHTML = "";
   const tileGrpid = deck.deckTileId ?? DEFAULT_TILE;
 
-  const parentId = deck.id ?? "";
+  const parentId = deck.id;
 
   // e.stopPropagation will not work across React/non-React boundary???
   // hack to manually prevent tag clicks from causing a drilldown action

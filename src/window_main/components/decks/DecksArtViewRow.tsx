@@ -47,7 +47,7 @@ export default function DecksArtViewRow({
   ...otherProps
 }: DecksTableRowProps): JSX.Element {
   const deck = row.original;
-  const parentId = deck.id ?? "";
+  const parentId = deck.id;
   const onRowClick = (): void => {
     openDeckCallback(parentId);
   };

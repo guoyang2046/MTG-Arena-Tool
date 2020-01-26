@@ -160,7 +160,7 @@ function getEventsData(aggregator: Aggregator): EventTableData[] {
           custom: true,
           colors,
           colorSortVal: colors.join(""),
-          deckId: event.CourseDeck.id ?? "",
+          deckId: event.CourseDeck.id,
           deckName: event.CourseDeck.name ?? "",
           format: db.events_format[event.InternalEventName] ?? "unknown",
           stats,

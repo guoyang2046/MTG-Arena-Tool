@@ -101,7 +101,7 @@ function updateStatsPanel(
 function getDecksData(aggregator: Aggregator): DecksData[] {
   return pd.deckList.map(
     (deck: InternalDeck): DecksData => {
-      const id = deck.id ?? "";
+      const id = deck.id;
       const archivedSortVal = deck.archived ? 1 : deck.custom ? 0.5 : 0;
       const colorSortVal = deck.colors?.join("") ?? "";
       // compute winrate metrics
