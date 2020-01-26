@@ -89,7 +89,7 @@ export default function OutLogInfo(entry: Entry): void {
           sideboard: [],
           name: "",
           deckTileId: 0,
-          lastUpdated: new Date(),
+          lastUpdated: new Date().toISOString(),
           format: "",
           type: "InternalDeck"
         }

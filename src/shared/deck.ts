@@ -17,7 +17,7 @@ const defaultDeck: Partial<InternalDeck> = {
   sideboard: [],
   name: "",
   deckTileId: 0,
-  lastUpdated: new Date(),
+  lastUpdated: new Date().toISOString(),
   format: "",
   type: "InternalDeck"
 };
@@ -67,10 +67,9 @@ class Deck {
     this.archetype =
       mtgaDeck.type == "InternalDeck" ? mtgaDeck.archetype || "" : "";
 
-    this.lastUpdated =
-      mtgaDeck.type == "InternalDeck"
-        ? mtgaDeck.lastUpdated || new Date()
-        : new Date(mtgaDeck.lastUpdated + "");
+    this.lastUpdated = mtgaDeck.lastUpdated
+      ? new Date(mtgaDeck.lastUpdated)
+      : new Date();
 
     return this;
   }
@@ -325,7 +324,7 @@ class Deck {
       sideboard: this.sideboard.get(),
       name: this.name,
       id: this.id,
-      lastUpdated: this.lastUpdated,
+      lastUpdated: this.lastUpdated.toISOString(),
       deckTileId: this.tile,
       colors: this.colors.get(),
       tags: this.tags || [],

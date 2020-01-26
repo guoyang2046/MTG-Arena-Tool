@@ -4,26 +4,19 @@ export interface ArenaV3Deck extends BasicDeck {
   isValid: boolean;
   lockedForUse: boolean;
   lockedForEdit: boolean;
-  lastUpdated: string;
   reourceId?: string;
   cardSkins: CardSkin[];
   description: string;
   cardBack: null | string;
-  id: string;
   commandZoneGRPIds: [];
-  name: string;
-  format: string;
-  deckTileId: number;
   type: "ArenaV3Deck";
 }
 
 export interface InternalDeck extends BasicDeck {
   mainDeck: v2cardsList;
   sideboard: v2cardsList;
-  lastUpdated: Date;
   custom?: boolean;
   tags?: string[];
-  id: string;
   colors?: number[];
   archetype?: string;
   archived?: boolean;
@@ -31,10 +24,12 @@ export interface InternalDeck extends BasicDeck {
 }
 
 export interface BasicDeck {
-  commandZoneGRPIds: null | number[];
+  id: string;
+  commandZoneGRPIds?: number[];
   mainDeck: anyCardsList;
   sideboard: anyCardsList;
   name: string;
+  lastUpdated: string;
   deckTileId: number;
   format: string;
 }
