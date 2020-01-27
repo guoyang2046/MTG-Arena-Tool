@@ -77,12 +77,15 @@ async function fixBadPlayerData(): Promise<void> {
   const decks = { ...playerData.decks };
   for (const deck of playerData.deckList) {
     if (!isV2CardsList(deck.mainDeck)) {
-      ipcLog("Converting v3 deck: " + deck.id);
+      console.log("Converting v3 deck: " + deck.id);
       const fixedDeck = convertDeckFromV3(deck);
       decks[deck.id] = fixedDeck;
+      // For some reason this doesnt work?
+      // it doesnt update the data when looking at playerData
       await playerDb.upsert("decks", deck.id, fixedDeck);
     }
   }
+  console.log(decks);
   setData({ decks }, false);
 }
 

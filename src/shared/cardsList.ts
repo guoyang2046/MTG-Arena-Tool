@@ -46,10 +46,13 @@ class CardsList {
       });
     } else {
       // We can pass a CardsList object too
-      if (newList.list) newList = newList.list;
-      newList.forEach(id => {
-        this.list.push({ quantity: 1, id: id, measurable: true, chance: 0 });
-      });
+      if (newList.list) {
+        this.list = newList.list;
+      } else {
+        newList.forEach(id => {
+          this.list.push({ quantity: 1, id: id, measurable: true, chance: 0 });
+        });
+      }
       this.removeDuplicates(true);
     }
   }
