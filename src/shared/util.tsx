@@ -313,7 +313,7 @@ export function get_deck_colors(deck: InternalDeck): number[] {
 export function get_wc_missing(
   deck: InternalDeck,
   grpid: number,
-  isSideboard: boolean
+  isSideboard?: boolean
 ): number {
   let mainQuantity = 0;
   const mainMatches = deck.mainDeck.filter(card => card.id == grpid);

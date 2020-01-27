@@ -33,7 +33,7 @@ class CardsList {
   private list: v2cardsList;
 
   // This should take anyCardsList as an argument?
-  constructor(newList: any[]) {
+  constructor(newList: any) {
     this.list = [];
     if (isV2CardsList(newList)) {
       this.list = newList.map((obj: CardObject) => {
@@ -45,6 +45,8 @@ class CardsList {
         };
       });
     } else {
+      // We can pass a CardsList object too
+      if (newList.list) newList = newList.list;
       newList.forEach(id => {
         this.list.push({ quantity: 1, id: id, measurable: true, chance: 0 });
       });
