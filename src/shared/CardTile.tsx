@@ -17,6 +17,7 @@ import {
 import { addCardHover } from "./cardHover";
 import { DbCardData, Rarity } from "../types/Metadata";
 import _ from "lodash";
+import { InternalDeck } from "../types/Deck";
 
 export interface CardTileProps {
   card: DbCardData;
@@ -268,7 +269,7 @@ interface MissingCardsProps {
 function WildcardsNeeded(props: WildcardsNeededProps): JSX.Element {
   const { card, deck, isSideboard, listStyle, ww } = props;
   if (card.type.indexOf("Basic Land") === -1) {
-    const missing = getWildcardsMissing(deck, card.id, isSideboard);
+    const missing = getWildcardsMissing(deck.getSave(), card.id, isSideboard);
     const cardRarity = card.rarity;
 
     if (missing > 0) {

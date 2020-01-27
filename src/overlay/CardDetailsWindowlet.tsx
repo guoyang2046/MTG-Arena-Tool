@@ -83,7 +83,7 @@ export default function CardDetailsWindowlet(
   const imgProps = {
     alt: name,
     className: "main_hover",
-    src: images ? getCardImage(card) : NO_IMG_URL,
+    src: images && card ? getCardImage(card) : NO_IMG_URL,
     style: {
       width: cardsSizeHoverCard + "px",
       height: cardsSizeHoverCard / SCALAR + "px"

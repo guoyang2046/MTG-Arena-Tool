@@ -21,7 +21,10 @@ import { createDiv } from "./dom-fns";
 import Deck from "./deck";
 import { DbCardData } from "../types/Metadata";
 import { v2cardsList, CardObject, InternalDeck } from "../types/Deck";
-import { MissingWildcards, CardCounts } from "../window_main/components/decks/types";
+import {
+  MissingWildcards,
+  CardCounts
+} from "../window_main/components/decks/types";
 import DeckManaCurve from "./DeckManaCurve";
 import DeckTypesStats from "./DeckTypesStats";
 import { MatchPlayer } from "../types/currentMatch";
@@ -39,7 +42,7 @@ export function getCardArtCrop(card: DbCardData | number): string {
 
 export function getCardImage(
   card: DbCardData | number,
-  quality?: string = pd.settings.cards_quality
+  quality: string = pd.settings.cards_quality
 ): string {
   const cardObj = typeof card == "number" ? db.card(card) : card;
 

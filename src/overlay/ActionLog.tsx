@@ -37,7 +37,9 @@ function LogEntry(props: LogEntryProps): JSX.Element {
     ) {
       _card = dfcCard || fullCard;
     }
-    openScryfallCard(_card);
+    if (_card) {
+      openScryfallCard(_card);
+    }
   }, [fullCard, dfcCard]);
   const displayLog = { ...log };
   displayLog.str = log.str.replace(

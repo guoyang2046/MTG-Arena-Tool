@@ -49,7 +49,7 @@ class CardsList {
       if (newList.list) {
         this.list = newList.list;
       } else {
-        newList.forEach(id => {
+        newList.forEach((id: any) => {
           this.list.push({ quantity: 1, id: id, measurable: true, chance: 0 });
         });
       }

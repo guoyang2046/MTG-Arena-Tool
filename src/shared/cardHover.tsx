@@ -54,7 +54,7 @@ export function addCardHover(element: HTMLElement, card?: DbCardData): void {
       });
 
       const dfcCard = db.card(dbCard.dfcId);
-      const dfcCardImage = getCardImage(dfcCard);
+      const dfcCardImage = dfcCard ? getCardImage(dfcCard) : "";
 
       const dfcImageElement = $$(".main_hover_dfc")[0];
       dfcImageElement.src = dfcCardImage;

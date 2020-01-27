@@ -24,7 +24,7 @@ export default function TagOption(props: TagOptionProps): JSX.Element {
   if (showCount && archCounts && tag in archCounts) {
     tagString += ` (${archCounts[tag]})`;
   }
-  if (tag === Aggregator.NO_ARCH) return tagString;
+  //if (tag === Aggregator.NO_ARCH) return tagString;
   return (
     <div className={"deck_tag"} style={style}>
       {tagString}

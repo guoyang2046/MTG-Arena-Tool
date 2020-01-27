@@ -277,7 +277,7 @@ function InventoryCardList(props: InventoryCardListProps): JSX.Element {
   const uniqueCardList = countDupesArray(cardsList);
   const cardCounts = Object.entries(uniqueCardList);
   cardCounts.sort((a: [string, number], b: [string, number]): number =>
-    collectionSortRarity(a[0], b[0])
+    collectionSortRarity(parseInt(a[0]), parseInt(b[0]))
   );
   return (
     <>
@@ -440,7 +440,9 @@ function InventoryCard(props: InventoryCardProps): JSX.Element {
   const inventoryCardRef = React.useRef<HTMLDivElement>(null);
   const onCardClick = React.useCallback(() => {
     const lookupCard = db.card(card?.dfcId) ?? card;
-    openScryfallCard(lookupCard);
+    if (lookupCard) {
+      openScryfallCard(lookupCard);
+    }
   }, [card]);
   // inventoryCard.style.width = "39px";
 
@@ -464,7 +466,7 @@ function InventoryCard(props: InventoryCardProps): JSX.Element {
           "inventory_card_img 39px" +
           (isAetherized ? " inventory_card_aetherized" : "")
         }
-        src={getCardImage(card)}
+        src={getCardImage(card || 0)}
         title={tooltip}
       />
       {quantity && quantity > 1 && (
