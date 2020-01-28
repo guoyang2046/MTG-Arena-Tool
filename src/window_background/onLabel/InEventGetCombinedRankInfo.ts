@@ -1,6 +1,7 @@
 import LogEntry from "../../types/logDecoder";
 import { setData } from "../backgroundUtil";
 import { playerDb } from "../../shared/db/LocalDatabase";
+import { InternalRank } from "../../types/rank";
 
 interface EntryJson {
   playerId: string;
@@ -31,7 +32,7 @@ interface Entry extends LogEntry {
 export default function InEventGetCombinedRankInfo(entry: Entry): void {
   const json = entry.json();
   if (!json) return;
-  const rank = {
+  const rank: InternalRank = {
     constructed: {
       rank: json.constructedClass,
       tier: json.constructedLevel,

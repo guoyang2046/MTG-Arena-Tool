@@ -91,6 +91,7 @@ export default function OutLogInfo(entry: Entry): void {
           deckTileId: 0,
           lastUpdated: new Date().toISOString(),
           format: "",
+          description: "",
           type: "InternalDeck"
         }
       };

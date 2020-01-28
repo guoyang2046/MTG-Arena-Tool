@@ -40,6 +40,7 @@ class Deck {
   public custom: boolean;
   public archetype: string;
   public format: string;
+  public description: string;
 
   constructor(
     mtgaDeck: InternalDeck | ArenaV3Deck | Partial<InternalDeck> = defaultDeck,
@@ -59,6 +60,7 @@ class Deck {
     this._colors = this.getColors();
     this.format = mtgaDeck.format || "";
     this.id = mtgaDeck.id || "";
+    this.description = mtgaDeck.description ?? "";
 
     if (!isInternalDeck(mtgaDeck)) {
       this.tags = [mtgaDeck.format ?? "unknown"];
@@ -332,6 +334,7 @@ class Deck {
       custom: this.custom,
       commandZoneGRPIds: this.commandZoneGRPIds,
       format: this.format,
+      description: this.description,
       type: "InternalDeck"
     };
   }

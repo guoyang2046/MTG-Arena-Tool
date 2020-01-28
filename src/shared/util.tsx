@@ -27,6 +27,8 @@ import {
 } from "../window_main/components/decks/types";
 import DeckManaCurve from "./DeckManaCurve";
 import DeckTypesStats from "./DeckTypesStats";
+import { InternalPlayer } from "../types/match";
+import { InternalRankData } from "../types/rank";
 import { MatchPlayer } from "../types/currentMatch";
 
 export function getCardArtCrop(card: DbCardData | number): string {
@@ -667,7 +669,9 @@ export function deckTypesStats(deck: InternalDeck): HTMLDivElement {
 }
 
 // pass in playerData.constructed / limited / historic objects
-export function formatRank(rank: MatchPlayer): string {
+export function formatRank(
+  rank: InternalRankData | MatchPlayer | InternalPlayer
+): string {
   if (rank.leaderboardPlace) {
     return `Mythic #${rank.leaderboardPlace}`;
   }

@@ -6,7 +6,6 @@ export interface ArenaV3Deck extends BasicDeck {
   lockedForEdit: boolean;
   reourceId?: string;
   cardSkins: CardSkin[];
-  description: string;
   cardBack: null | string;
   commandZoneGRPIds: [];
   type: "ArenaV3Deck";
@@ -41,6 +40,7 @@ export interface BasicDeck {
   lastUpdated: string;
   deckTileId: number;
   format: string;
+  description: string;
 }
 
 export interface CardObject {

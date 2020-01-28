@@ -6,6 +6,7 @@ import globals from "../globals";
 import { parseWotcTimeFallback, setData } from "../backgroundUtil";
 
 import LogEntry from "../../types/logDecoder";
+import { InternalRank } from "../../types/rank";
 
 interface EntryJson {
   timestamp: string;
@@ -51,7 +52,7 @@ export default function MythicRatingUpdated(entry: Entry): void {
     type = "limited";
   }
 
-  const rank = { ...playerData.rank };
+  const rank: InternalRank = { ...playerData.rank };
 
   rank.constructed.percentile = newJson.newMythicPercentile;
   rank.constructed.leaderboardPlace = newJson.newMythicLeaderboardPlacement;

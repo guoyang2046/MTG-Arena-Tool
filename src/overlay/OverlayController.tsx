@@ -1,27 +1,22 @@
 import { ipcRenderer as ipc, webFrame } from "electron";
-import React, { useEffect, useCallback, useState } from "react";
 import { Howl, Howler } from "howler";
+import React, { useCallback, useEffect, useState } from "react";
 import striptags from "striptags";
-
-import playerData from "../shared/player-data";
-import Deck from "../shared/deck";
 import {
   ARENA_MODE_IDLE,
   IPC_BACKGROUND,
   IPC_MAIN,
   IPC_OVERLAY
 } from "../shared/constants";
-
-import {
-  DraftData,
-  LogData,
-  OverlaySettingsData,
-  SettingsData
-} from "./overlayUtil";
+import Deck from "../shared/deck";
+import playerData from "../shared/player-data";
 import { MatchData } from "../types/currentMatch";
-import CardDetailsWindowlet from "./CardDetailsWindowlet";
-import OverlayWindowlet from "./OverlayWindowlet";
+import { DraftData } from "../types/draft";
 import { DbCardData } from "../types/Metadata";
+import { OverlaySettingsData, SettingsData } from "../types/settings";
+import CardDetailsWindowlet from "./CardDetailsWindowlet";
+import { LogData } from "./overlayUtil";
+import OverlayWindowlet from "./OverlayWindowlet";
 
 const sound = new Howl({ src: ["../sounds/blip.mp3"] });
 

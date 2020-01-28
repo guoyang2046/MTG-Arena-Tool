@@ -1,27 +1,18 @@
 import React, { useRef } from "react";
-
 import {
-  ARENA_MODE_MATCH,
   ARENA_MODE_DRAFT,
   ARENA_MODE_IDLE,
+  ARENA_MODE_MATCH,
   COLORS_ALL,
   OVERLAY_DRAFT_MODES
 } from "../shared/constants";
-
-import {
-  getEditModeClass,
-  useEditModeOnRef,
-  DraftData,
-  DraftState,
-  LogData,
-  SettingsData
-} from "./overlayUtil";
-
 import { MatchData } from "../types/currentMatch";
-
+import { DraftData, DraftState } from "../types/draft";
+import { DbCardData } from "../types/Metadata";
+import { SettingsData } from "../types/settings";
 import DraftElements from "./DraftElements";
 import MatchElements from "./MatchElements";
-import { DbCardData } from "../types/Metadata";
+import { getEditModeClass, LogData, useEditModeOnRef } from "./overlayUtil";
 
 const DEFAULT_BACKGROUND = "../images/Bedevil-Art.jpg";
 

@@ -18,3 +18,20 @@ export interface InternalRankUpdate extends RankUpdate {
   lastMatchId: string;
   eventId: string;
 }
+
+export interface InternalRankData {
+  rank: string;
+  tier: number;
+  step: number;
+  won: number;
+  lost: number;
+  drawn: number;
+  percentile: number;
+  leaderboardPlace: number;
+  seasonOrdinal: number;
+}
+
+export interface InternalRank extends Record<string, InternalRankData> {
+  constructed: InternalRankData;
+  limited: InternalRankData;
+}

@@ -1,21 +1,20 @@
 import React from "react";
-
 import {
   MANA,
-  OVERLAY_LOG,
   OVERLAY_FULL,
   OVERLAY_LEFT,
-  OVERLAY_ODDS,
+  OVERLAY_LOG,
   OVERLAY_MIXED,
+  OVERLAY_ODDS,
   OVERLAY_SEEN
 } from "../shared/constants";
-
-import { LogData, OverlaySettingsData } from "./overlayUtil";
+import { MatchData } from "../types/currentMatch";
+import { DbCardData } from "../types/Metadata";
+import { OverlaySettingsData } from "../types/settings";
 import ActionLog from "./ActionLog";
 import Clock from "./Clock";
 import DeckList from "./DeckList";
-import { DbCardData } from "../types/Metadata";
-import { MatchData } from "../types/currentMatch";
+import { LogData } from "./overlayUtil";
 
 export interface MatchElementsProps {
   actionLog: LogData[];

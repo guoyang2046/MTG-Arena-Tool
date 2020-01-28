@@ -1,17 +1,12 @@
 import React, { useRef } from "react";
 import { CSSTransition } from "react-transition-group";
-
 import { ARENA_MODE_DRAFT } from "../shared/constants";
-import { getCardImage } from "../shared/util";
 import DraftRatings from "../shared/DraftRatings";
-
-import {
-  getEditModeClass,
-  useEditModeOnRef,
-  SettingsData
-} from "./overlayUtil";
-import { DbCardData } from "../types/Metadata";
+import { getCardImage } from "../shared/util";
 import { Chances } from "../types/Chances";
+import { DbCardData } from "../types/Metadata";
+import { SettingsData } from "../types/settings";
+import { getEditModeClass, useEditModeOnRef } from "./overlayUtil";
 
 const NO_IMG_URL = "./images/nocard.png";
 
