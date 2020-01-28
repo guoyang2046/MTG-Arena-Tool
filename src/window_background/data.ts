@@ -3,7 +3,7 @@ import _ from "lodash";
 import { DEFAULT_TILE } from "../shared/constants";
 import database from "../shared/database";
 import Deck from "../shared/deck";
-import playerData from "../shared/player-data.js";
+import playerData from "../shared/player-data";
 import { objectClone } from "../shared/util";
 import { MatchData, matchDataDefault } from "../types/currentMatch";
 import { InternalMatch } from "../types/match";
