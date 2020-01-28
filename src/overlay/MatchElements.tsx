@@ -9,15 +9,15 @@ import {
   OVERLAY_SEEN
 } from "../shared/constants";
 import { MatchData } from "../types/currentMatch";
+import { InternalActionLog } from "../types/log";
 import { DbCardData } from "../types/Metadata";
 import { OverlaySettingsData } from "../types/settings";
 import ActionLog from "./ActionLog";
 import Clock from "./Clock";
 import DeckList from "./DeckList";
-import { LogData } from "./overlayUtil";
 
 export interface MatchElementsProps {
-  actionLog: LogData[];
+  actionLog: InternalActionLog[];
   index: number;
   match: MatchData;
   setHoverCardCallback: (card?: DbCardData) => void;

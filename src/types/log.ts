@@ -172,3 +172,10 @@ interface SceneChange extends LogInfoParams {
     playerId: string;
   };
 }
+
+export interface InternalActionLog {
+  grpId: number;
+  str: string;
+  seat: number;
+  time: string;
+}

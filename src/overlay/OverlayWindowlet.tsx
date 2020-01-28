@@ -8,17 +8,18 @@ import {
 } from "../shared/constants";
 import { MatchData } from "../types/currentMatch";
 import { DraftData, DraftState } from "../types/draft";
+import { InternalActionLog } from "../types/log";
 import { DbCardData } from "../types/Metadata";
 import { SettingsData } from "../types/settings";
 import DraftElements from "./DraftElements";
 import MatchElements from "./MatchElements";
-import { getEditModeClass, LogData, useEditModeOnRef } from "./overlayUtil";
+import { getEditModeClass, useEditModeOnRef } from "./overlayUtil";
 
 const DEFAULT_BACKGROUND = "../images/Bedevil-Art.jpg";
 
 export interface OverlayWindowletProps {
   arenaState: number;
-  actionLog: LogData[];
+  actionLog: InternalActionLog[];
   draft?: DraftData;
   draftState: DraftState;
   editMode: boolean;

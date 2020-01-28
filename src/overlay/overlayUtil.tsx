@@ -1,20 +1,6 @@
 import { useEffect } from "react";
 import interact from "interactjs";
 
-export interface CardData {
-  id: string;
-  quantity: number;
-  chance?: number;
-  dfcId?: string;
-}
-
-export interface LogData {
-  grpId: number;
-  str: any;
-  seat: number;
-  time: string;
-}
-
 const restrictMinSize =
   interact.modifiers &&
   interact.modifiers.restrictSize({

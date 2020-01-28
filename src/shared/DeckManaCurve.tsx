@@ -1,23 +1,20 @@
 import * as React from "react";
-
+import Deck from "../shared/deck";
 import { MANA_COLORS } from "./constants";
 import db from "./database";
-import Deck from "../shared/deck";
-import { CardData } from "../overlay/overlayUtil";
-import { CardObject } from "../types/Deck";
 
 function add(a: number, b: number): number {
   return a + b;
 }
 
-function getDeckCurve(deck: Deck): any[] {
-  const curve: any[] = [];
+function getDeckCurve(deck: Deck): number[][] {
+  const curve: number[][] = [];
   if (!deck.getMainboard()) return curve;
 
   deck
     .getMainboard()
     .get()
-    .forEach((card: CardObject) => {
+    .forEach(card => {
       const cardObj = db.card(card.id);
       if (!cardObj) return;
 
