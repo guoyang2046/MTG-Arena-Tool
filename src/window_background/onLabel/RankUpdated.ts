@@ -16,7 +16,7 @@ export default function RankUpdated(entry: Entry): void {
   const newJson: InternalRankUpdate = {
     ...json,
     id: entry.hash,
-    date: globals.logTime,
+    date: globals.logTime.toISOString(),
     timestamp: globals.logTime.getTime(),
     lastMatchId: globals.currentMatch.matchId,
     eventId: globals.currentMatch.eventId

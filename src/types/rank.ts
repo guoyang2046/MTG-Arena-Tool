@@ -1,4 +1,5 @@
-export interface RankUpdate {
+export interface RankBase {
+  id: string;
   playerId: string;
   seasonOrdinal: number;
   newClass: string;
@@ -9,12 +10,18 @@ export interface RankUpdate {
   newStep: number;
   wasLossProtected: boolean;
   rankUpdateType: string;
+  oldMythicPercentile: number;
+  newMythicPercentile: number;
+  newMythicLeaderboardPlacement: number;
 }
 
-export interface InternalRankUpdate extends RankUpdate {
-  id: string;
-  date: Date;
+export interface RankUpdate extends RankBase {
+  timestamp: string;
+}
+
+export interface InternalRankUpdate extends RankBase {
   timestamp: number;
+  date: string;
   lastMatchId: string;
   eventId: string;
 }

@@ -6,19 +6,10 @@ import globals from "../globals";
 import { parseWotcTimeFallback, setData } from "../backgroundUtil";
 
 import LogEntry from "../../types/logDecoder";
-import { InternalRank } from "../../types/rank";
-
-interface EntryJson {
-  timestamp: string;
-  eventId: string;
-  oldMythicPercentile: number;
-  newMythicPercentile: number;
-  newMythicLeaderboardPlacement: number;
-  context: string;
-}
+import { InternalRank, RankUpdate } from "../../types/rank";
 
 interface Entry extends LogEntry {
-  json: () => EntryJson;
+  json: () => RankUpdate;
 }
 
 export default function MythicRatingUpdated(entry: Entry): void {
