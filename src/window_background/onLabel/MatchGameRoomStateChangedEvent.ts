@@ -36,7 +36,7 @@ export default function onLabelMatchGameRoomStateChangedEvent(
     if (!globals.currentMatch) {
       let oName = "";
       gameRoom.gameRoomConfig.reservedPlayers.forEach(player => {
-        if (!player.userId === playerData.arenaId) {
+        if (!(player.userId === playerData.arenaId)) {
           oName = player.playerName;
         }
       });
