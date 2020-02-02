@@ -1,21 +1,14 @@
 import { setData } from "./backgroundUtil";
 import { playerDb } from "../shared/db/LocalDatabase";
 import playerData from "../shared/player-data";
-
-export interface Deck {
-  id: string;
-}
+import Deck from "../shared/deck";
 
 type StoreShim = { set: (key: string, value: any) => void };
 
 const addCustomDeck = function(customDeck: Deck): void {
   const id = customDeck.id;
-  const deckData = {
-    // preserve custom fields if possible
-    ...(playerData.deck(id) || {}),
-    ...customDeck
-  };
-
+  const deckData = customDeck.getSave();
+  console.log("window_background addCustomDeck.ts deckData", deckData);
   setData({ decks: { ...playerData.decks, [customDeck.id]: deckData } });
   playerDb.upsert("decks", id, deckData);
 };
