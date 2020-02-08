@@ -28,7 +28,7 @@ export interface EventTableData extends TableData, InternalEvent, EventStats {
 export interface EventsTableProps {
   archiveCallback: (id: string | number) => void;
   aggFilters: AggregatorFilters;
-  cachedState: TableState<EventTableData>;
+  cachedState?: TableState<EventTableData>;
   cachedTableMode: string;
   data: EventTableData[];
   editTagCallback: (tag: string, color: string) => void;

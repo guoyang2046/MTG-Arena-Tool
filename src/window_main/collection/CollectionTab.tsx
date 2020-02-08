@@ -68,7 +68,7 @@ function getExportString(cardIds: string[]): string {
       const code = db.sets[card.set]?.code ?? "???";
       add = add
         .replace("$Name", '"' + name + '"')
-        .replace("$Count", count)
+        .replace("$Count", count + "")
         .replace("$SetName", card.set)
         .replace("$SetCode", code)
         .replace("$Collector", card.cid)
@@ -105,7 +105,7 @@ function getCollectionData(): CardsData[] {
       });
     });
   return db.cardList
-    .filter(card => card.collectible && card.rarity !== "land")
+    .filter(card => card.collectible)
     .map(
       (card): CardsData => {
         const owned = pd.cards.cards[card.id] ?? 0;

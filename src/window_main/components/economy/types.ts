@@ -31,7 +31,7 @@ export interface TransactionData extends InternalEconomyTransaction {
 
 export interface EconomyTableProps {
   archiveCallback: (id: string) => void;
-  cachedState: TableState<TransactionData>;
+  cachedState?: TableState<TransactionData>;
   cachedTableMode: string;
   data: TransactionData[];
   tableModeCallback: (tableMode: string) => void;

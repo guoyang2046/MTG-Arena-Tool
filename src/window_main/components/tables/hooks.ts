@@ -1,20 +1,25 @@
 import _ from "lodash";
 import React from "react";
 import {
+  Row,
+  SortByFn,
   TableInstance,
   TableState,
   useFilters,
   useGlobalFilter,
   usePagination,
   useSortBy,
-  useTable
+  useTable,
+  IdType
 } from "react-table";
 import pd from "../../../shared/player-data";
 import Aggregator, { AggregatorFilters } from "../../aggregator";
+import { getLocalState, setLocalState } from "../../renderer-util";
 import {
   archivedFilterFn,
   colorsFilterFn,
-  fuzzyTextFilterFn
+  fuzzyTextFilterFn,
+  isHidingArchived
 } from "../tables/filters";
 import {
   BaseTableProps,
@@ -49,6 +54,20 @@ export function useMultiSelectFilter<D>(
   return [filterValue, onClickMultiFilter];
 }
 
+export function useEnumSort<D extends TableData>(
+  enums: readonly string[]
+): SortByFn<D> {
+  return React.useCallback(
+    (rowA: Row<D>, rowB: Row<D>, columnId: IdType<D>): 0 | 1 | -1 => {
+      const indexDiff =
+        enums.indexOf(rowA.values[columnId]) -
+        enums.indexOf(rowB.values[columnId]);
+      return indexDiff < 0 ? -1 : indexDiff > 0 ? 1 : 0;
+    },
+    [enums]
+  );
+}
+
 export function useLegacyRenderer(
   renderEventRow: (container: HTMLDivElement, ...rendererArgs: any[]) => any,
   ...rendererArgs: any[]
@@ -61,6 +80,27 @@ export function useLegacyRenderer(
     }
   }, [containerRef, renderEventRow, rendererArgs]);
   return containerRef;
+}
+
+export function useLastScrollTop(): [
+  React.RefObject<HTMLDivElement>,
+  () => void
+] {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (containerRef?.current) {
+      const { lastScrollTop } = getLocalState();
+      if (lastScrollTop) {
+        containerRef.current.scrollTop = lastScrollTop;
+      }
+    }
+  }, [containerRef]);
+  const onScroll = React.useCallback(() => {
+    if (containerRef?.current) {
+      setLocalState({ lastScrollTop: containerRef.current.scrollTop });
+    }
+  }, []);
+  return [containerRef, onScroll];
 }
 
 export function useAggregatorAndSidePanel<D extends TableData>({
@@ -169,17 +209,21 @@ export function useBaseReactTable<D extends TableData>({
     const hiddenColumns = columns
       .filter(column => !column.defaultVisible)
       .map(column => column.id ?? column.accessor);
-    const state = _.defaultsDeep(cachedState, {
+    const mergedDefault = _.defaults(defaultState, {
       pageSize: 25,
-      ...defaultState,
       hiddenColumns
-    });
+    }) as TableState<D>;
+    const state = cachedState ?? mergedDefault;
+
     // ensure data-only columns are all invisible
+    const hiddenSet = new Set(state.hiddenColumns ?? []);
     for (const column of columns) {
-      if (!column.defaultVisible && !column.mayToggle) {
-        state.hiddenColumns.push(column.id ?? column.accessor);
+      const id = column.id ?? column.accessor;
+      if (id && !column.defaultVisible && !column.mayToggle) {
+        hiddenSet.add(id + "");
       }
     }
+    state.hiddenColumns = [...hiddenSet];
     return state;
   }, [cachedState, columns, defaultState]);
 
@@ -302,4 +346,22 @@ export function useBaseReactTable<D extends TableData>({
     headersProps,
     tableControlsProps
   };
+}
+
+export function useAggregatorArchiveFilter<D extends TableData>(
+  table: TableInstance<D>,
+  aggFilters: AggregatorFilters,
+  setAggFiltersCallback: (filters: AggregatorFilters) => void
+): void {
+  const {
+    state: { filters }
+  } = table;
+  React.useEffect(() => {
+    if (isHidingArchived({ filters }) === !!aggFilters.showArchived) {
+      setAggFiltersCallback({
+        ...aggFilters,
+        showArchived: !isHidingArchived({ filters })
+      });
+    }
+  }, [aggFilters, setAggFiltersCallback, filters]);
 }

@@ -11,7 +11,11 @@ import { InternalMatch } from "../types/match";
 import Aggregator, { AggregatorFilters } from "./aggregator";
 import MatchesTable from "./components/matches/MatchesTable";
 import { MatchTableData } from "./components/matches/types";
-import { useAggregatorAndSidePanel } from "./components/tables/hooks";
+import { isHidingArchived } from "./components/tables/filters";
+import {
+  useAggregatorAndSidePanel,
+  useLastScrollTop
+} from "./components/tables/hooks";
 import { TagCounts } from "./components/tables/types";
 import { openMatch } from "./match-details";
 import mountReactComponent from "./mountReactComponent";
@@ -40,7 +44,7 @@ function openMatchDetails(id: string | number): void {
 
 function addTag(matchid: string, tag: string): void {
   const match = pd.match(matchid);
-  if ([tagPrompt, NO_ARCH].includes(tag)) return;
+  if (!match || [tagPrompt, NO_ARCH].includes(tag)) return;
   if (match.tags?.includes(tag)) return;
   ipcSend("add_matches_tag", { matchid, tag });
 }
@@ -51,7 +55,7 @@ function editTag(tag: string, color: string): void {
 
 function deleteTag(matchid: string, tag: string): void {
   const match = pd.match(matchid);
-  if (!match.tags?.includes(tag)) return;
+  if (!match || !match.tags?.includes(tag)) return;
   ipcSend("delete_matches_tag", { matchid, tag });
 }
 
@@ -225,6 +229,8 @@ function getMatchesData(aggregator: Aggregator): MatchTableData[] {
         const timestamp = new Date(match.date ?? NaN);
         const colors = match.playerDeck.colors ?? [];
         const oppColors = match.oppDeck.colors ?? [];
+        const oppArenaId = match.opponent.name ?? "-#000000";
+        const oppName = oppArenaId.slice(0, -6);
         return {
           ...match,
           archivedSortVal: match.archived ? 1 : 0,
@@ -243,7 +249,8 @@ function getMatchesData(aggregator: Aggregator): MatchTableData[] {
           oppColors,
           oppColorSortVal: oppColors.join(""),
           oppLeaderboardPlace: match.opponent.leaderboardPlace,
-          oppName: match.opponent.name ?? "",
+          oppArenaId,
+          oppName,
           oppPercentile: match.opponent.percentile
             ? match.opponent.percentile / 100
             : undefined,
@@ -282,8 +289,7 @@ export function MatchesTab({
   aggFiltersArg: AggregatorFilters;
 }): JSX.Element {
   const { matchesTableMode, matchesTableState } = pd.settings;
-  const showArchived =
-    matchesTableState?.filters?.archivedCol !== "hideArchived";
+  const showArchived = !isHidingArchived(matchesTableState);
   const getDataAggFilters = (data: MatchTableData[]): AggregatorFilters => {
     const matchIds = data.map(match => match.id);
     return { matchIds };
@@ -303,10 +309,11 @@ export function MatchesTab({
     updateSidebarCallback: updateStatsPanel
   });
   const [events, tags] = React.useMemo(getTotalAggData, []);
+  const [containerRef, onScroll] = useLastScrollTop();
 
   return (
     <>
-      <div className={"wrapper_column"}>
+      <div className={"wrapper_column"} ref={containerRef} onScroll={onScroll}>
         <MatchesTable
           data={data}
           aggFilters={aggFilters}
