@@ -1,7 +1,12 @@
 import _ from "lodash";
-import db from "./database";
+import {
+  anyCardsList,
+  CardObject,
+  isV2CardsList,
+  v2cardsList
+} from "../types/Deck";
 import Colors from "./colors";
-import { CardObject, v2cardsList, isV2CardsList } from "../types/Deck";
+import db from "./database";
 
 interface CardTypesCount {
   art: number;
@@ -32,8 +37,7 @@ class CardsList {
    **/
   private list: v2cardsList;
 
-  // This should take anyCardsList as an argument?
-  constructor(newList: any) {
+  constructor(newList: anyCardsList) {
     this.list = [];
     if (isV2CardsList(newList)) {
       this.list = newList.map((obj: CardObject) => {
@@ -45,14 +49,9 @@ class CardsList {
         };
       });
     } else {
-      // We can pass a CardsList object too
-      if (newList.list) {
-        this.list = newList.list;
-      } else {
-        newList.forEach((id: any) => {
-          this.list.push({ quantity: 1, id: id, measurable: true, chance: 0 });
-        });
-      }
+      newList.forEach(id => {
+        this.list.push({ quantity: 1, id: id, measurable: true, chance: 0 });
+      });
       this.removeDuplicates(true);
     }
   }

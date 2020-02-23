@@ -12,6 +12,6 @@ export default function onLabelInEventGetSeasonAndRankDetail(
 ): void {
   const json = entry.json();
   if (!json) return;
-  db.handleSetSeason(json);
+  db.handleSetSeason(null, json);
   ipcSend("set_season", json);
 }

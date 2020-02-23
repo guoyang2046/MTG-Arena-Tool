@@ -201,7 +201,7 @@ class Deck {
    * @param countSideboard weter or not to count the sideboard cards.
    */
   getMissingWildcards(countMainboard = true, countSideboard = true) {
-    const missing = {
+    const missing: Record<string, number> = {
       rare: 0,
       common: 0,
       uncommon: 0,
@@ -334,8 +334,8 @@ class Deck {
       custom: this.custom,
       commandZoneGRPIds: this.commandZoneGRPIds,
       format: this.format,
-      description: this.description,
-      type: "InternalDeck"
+      type: "InternalDeck",
+      description: this.description
     };
   }
 

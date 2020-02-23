@@ -137,7 +137,7 @@ class Database {
     this.rewards_weekly_ends = new Date(rewardsDate.weekly);
   }
 
-  handleSetSeason(season: SeasonAndRankDetail): void {
+  handleSetSeason(_event: unknown, season: SeasonAndRankDetail): void {
     try {
       this.season = season;
     } catch (e) {

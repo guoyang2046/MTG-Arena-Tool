@@ -198,7 +198,7 @@ export function getDefaultColorFilter(): ColorFilter {
 }
 
 export function filterDeckByColors(
-  deck: { colors?: number[] } | null,
+  deck: Partial<InternalDeck> | null,
   _colors: ColorFilter
 ): boolean {
   if (!deck) return true;

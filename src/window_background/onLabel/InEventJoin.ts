@@ -18,7 +18,7 @@ export default function InEventJoin(entry: Entry): void {
 
   if (json.CourseDeck) {
     const deck = new Deck(json.CourseDeck);
-    addCustomDeck(deck);
+    addCustomDeck(json.CourseDeck);
     selectDeck(deck);
   }
 }

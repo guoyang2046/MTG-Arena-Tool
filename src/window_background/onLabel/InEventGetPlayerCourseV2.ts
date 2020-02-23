@@ -47,8 +47,8 @@ export default function InEventGetPlayerCourseV2(entry: Entry): void {
   delete json.Id;
 
   if (newJson.CourseDeck) {
-    const deck = new Deck(json.CourseDeck);
-    addCustomDeck(deck);
+    const deck = new Deck(newJson.CourseDeck);
+    addCustomDeck(newJson.CourseDeck);
     //newJson.date = timestamp();
     //console.log(newJson.CourseDeck, newJson.CourseDeck.colors)
     const httpApi = require("../httpApi");

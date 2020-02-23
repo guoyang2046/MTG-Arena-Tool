@@ -28,7 +28,7 @@ import {
 } from "./renderer-util";
 import StatsPanel from "./stats-panel";
 
-const { NO_ARCH, RANKED_CONST, RANKED_DRAFT } = Aggregator;
+const { DEFAULT_ARCH, NO_ARCH, RANKED_CONST, RANKED_DRAFT } = Aggregator;
 const tagPrompt = "Set archetype";
 
 function openMatchDetails(id: string | number): void {
@@ -266,7 +266,9 @@ function getMatchesData(aggregator: Aggregator): MatchTableData[] {
 function getTotalAggData(): [string[], TagCounts] {
   const totalAgg = new Aggregator();
   const allTags = [
-    ...(totalAgg.archs ?? []).filter(arch => arch !== NO_ARCH),
+    ...(totalAgg.archs ?? []).filter(
+      arch => arch !== NO_ARCH && arch !== DEFAULT_ARCH
+    ),
     ...Object.values(db.archetypes).map(arch => arch.name)
   ];
   const tags = [...new Set(allTags)].map(tag => {

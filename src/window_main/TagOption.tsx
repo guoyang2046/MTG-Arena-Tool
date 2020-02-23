@@ -9,8 +9,10 @@ export interface TagOptionProps {
   archCounts?: { [key: string]: number };
 }
 
-export default function TagOption(props: TagOptionProps): JSX.Element {
+export default function TagOption(props: TagOptionProps) {
   const { tag, showCount, archCounts } = props;
+  if (tag === Aggregator.DEFAULT_TAG) return tag;
+  if (tag === Aggregator.DEFAULT_ARCH) return tag;
   const color = getTagColor(tag);
   const style: React.CSSProperties = {
     whiteSpace: "nowrap",
@@ -24,7 +26,7 @@ export default function TagOption(props: TagOptionProps): JSX.Element {
   if (showCount && archCounts && tag in archCounts) {
     tagString += ` (${archCounts[tag]})`;
   }
-  //if (tag === Aggregator.NO_ARCH) return tagString;
+  if (tag === Aggregator.NO_ARCH) return tagString;
   return (
     <div className={"deck_tag"} style={style}>
       {tagString}

@@ -17,7 +17,7 @@ export default function InEventGetPlayerCoursesV2(entry: Entry): void {
   json.forEach(course => {
     if (course.CurrentEventState != "PreMatch") {
       if (course.CourseDeck != null) {
-        addCustomDeck(new Deck(course.CourseDeck));
+        addCustomDeck(new Deck(course.CourseDeck).getSave());
       }
     }
     if (course.Id) staticEvents.push(course.Id);
