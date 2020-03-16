@@ -14,7 +14,7 @@ import db from "./database";
 import {
   compare_cards,
   get_set_code,
-  get_wc_missing,
+  getWildcardsMissing,
   objectClone
 } from "./util";
 
@@ -262,7 +262,7 @@ class Deck {
         const card = db.card(grpid);
         if (card !== undefined) {
           const rarity = card.rarity;
-          const add = get_wc_missing(this, grpid, false);
+          const add = getWildcardsMissing(this, grpid, false);
           missing[rarity] += add;
         }
       });
@@ -274,7 +274,7 @@ class Deck {
         const card = db.card(grpid);
         if (card !== undefined) {
           const rarity = card.rarity;
-          const add = get_wc_missing(this, grpid, false);
+          const add = getWildcardsMissing(this, grpid, false);
           missing[rarity] += add;
         }
       });
