@@ -100,7 +100,6 @@ export interface DeckListProps {
   settings: OverlaySettingsData;
   tileStyle: number;
   cardOdds?: Chances;
-  setHoverCardCallback: (card?: DbCardData) => void;
   setOddsCallback?: (sampleSize: number) => void;
 }
 
@@ -112,7 +111,6 @@ export default function DeckList(props: DeckListProps): JSX.Element {
     tileStyle,
     highlightCardId,
     cardOdds,
-    setHoverCardCallback,
     setOddsCallback
   } = props;
   if (!deck) return <></>;
@@ -210,7 +208,6 @@ export default function DeckList(props: DeckListProps): JSX.Element {
     let dfcCard = card?.dfcId ? db.card(card.dfcId) : undefined;
     mainCardTiles.push(
       <CardTile
-        style={tileStyle}
         card={fullCard}
         dfcCard={dfcCard}
         key={"maincardtile_" + card.id}
@@ -218,7 +215,6 @@ export default function DeckList(props: DeckListProps): JSX.Element {
         isSideboard={false}
         quantity={quantity}
         showWildcards={false}
-        setHoverCardCallback={setHoverCardCallback}
         deck={deck}
         isHighlighted={card.id === highlightCardId}
       />
@@ -245,7 +241,6 @@ export default function DeckList(props: DeckListProps): JSX.Element {
       }
       sideboardCardTiles.push(
         <CardTile
-          style={tileStyle}
           card={fullCard}
           dfcCard={dfcCard}
           key={"sideboardcardtile_" + index + "_" + card.id}
@@ -253,7 +248,6 @@ export default function DeckList(props: DeckListProps): JSX.Element {
           isSideboard={true}
           quantity={quantity}
           showWildcards={false}
-          setHoverCardCallback={setHoverCardCallback}
           deck={deck}
           isHighlighted={false}
         />

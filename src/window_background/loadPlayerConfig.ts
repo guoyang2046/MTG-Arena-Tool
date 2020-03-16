@@ -5,7 +5,7 @@ import { ipcSend, setData } from "./backgroundUtil";
 import globals from "./globals";
 
 import { playerDb, playerDbLegacy } from "../shared/db/LocalDatabase";
-import playerData from "../shared/player-data";
+import playerData from "../shared/PlayerData";
 import { isV2CardsList } from "../types/Deck";
 import arenaLogWatcher from "./arena-log-watcher";
 import convertDeckFromV3 from "./convertDeckFromV3";

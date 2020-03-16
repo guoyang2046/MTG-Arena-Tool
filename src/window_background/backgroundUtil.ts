@@ -6,7 +6,7 @@ import _ from "lodash";
 import parse from "date-fns/parse";
 import isValid from "date-fns/isValid";
 import { IPC_BACKGROUND, IPC_MAIN, IPC_OVERLAY } from "../shared/constants";
-import playerData from "../shared/player-data";
+import playerData from "../shared/PlayerData";
 import globals from "./globals";
 
 import { create, all, MathJsStatic } from "mathjs";
@@ -131,6 +131,20 @@ export function updateLoading(entry: any): void {
   }
 }
 
+export function normaliseFields(object: any): any {
+  if (typeof object == "object") {
+    if (Array.isArray(object)) {
+      return _.transform(object, (result: any, value: any, key: number) => {
+        result[key] = normaliseFields(value);
+      });
+    }
+    return _.transform(object, (result: any, value: any, key: string) => {
+      result[key.replace(/List$/, "").toLowerCase()] = normaliseFields(value);
+    });
+  }
+  return object;
+}
+
 export function unleakString(s: string): string {
   return (" " + s).substr(1);
 }
@@ -167,7 +181,7 @@ export function setData(
   ipcSend("set_player_data", JSON.stringify(cleanData), IPC_MAIN);
 
   const overlayData = _.pick(cleanData, overlayWhitelist);
+  // This was left out in develop ?
+  // if (refresh) ipcSend("player_data_refresh");
   ipcSend("set_player_data", JSON.stringify(overlayData), IPC_OVERLAY);
-
-  if (refresh) ipcSend("player_data_refresh");
 }

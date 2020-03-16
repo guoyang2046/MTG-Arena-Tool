@@ -5,10 +5,10 @@ import { promisify } from "util";
 import { StringDecoder } from "string_decoder";
 import queue from "queue";
 import ArenaLogDecoder from "./arena-log-decoder/arena-log-decoder";
-import playerData from "../shared/player-data";
-import LogEntry from "../types/logDecoder";
 
+import LogEntry from "../types/logDecoder";
 import * as Labels from "./onLabel";
+import playerData from "../shared/PlayerData";
 
 import {
   ipcSend,
@@ -410,7 +410,6 @@ function finishLoading(): void {
 
     ipcSend("set_settings", JSON.stringify(playerData.settings));
     ipcSend("initialize");
-    ipcSend("player_data_refresh");
 
     ipcSend("popup", {
       text: "Initialized successfully!",

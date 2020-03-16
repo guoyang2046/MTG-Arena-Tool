@@ -9,7 +9,7 @@ import {
   IPC_OVERLAY
 } from "../shared/constants";
 import Deck from "../shared/deck";
-import playerData from "../shared/player-data";
+import playerData from "../shared/PlayerData";
 import { MatchData } from "../types/currentMatch";
 import { DraftData } from "../types/draft";
 import { InternalActionLog } from "../types/log";
@@ -17,6 +17,8 @@ import { DbCardData } from "../types/Metadata";
 import { OverlaySettingsData, SettingsData } from "../types/settings";
 import CardDetailsWindowlet from "./CardDetailsWindowlet";
 import OverlayWindowlet from "./OverlayWindowlet";
+import { dispatchAction, SET_HOVER_SIZE } from "../shared/redux/reducers";
+import { useDispatch } from "react-redux";
 
 const sound = new Howl({ src: ["../sounds/blip.mp3"] });
 
@@ -45,7 +47,7 @@ function setOddsCallback(sampleSize: number): void {
 /**
  * This is the React control component at the root of the overlay process.
  * It should handle all of the IPC traffic with other processes and manage all
- * of the data-related state for the overlays (except for player-data, which
+ * of the data-related state for the overlays (except for PlayerData, which
  * still handles "set_player_data").
  *
  * Overlay React hierarchy:
@@ -61,18 +63,16 @@ function setOddsCallback(sampleSize: number): void {
  *       - Clock
  */
 export default function OverlayController(): JSX.Element {
-  const [actionLog, setActionLog] = useState([] as InternalActionLog[]);
+  const [actionLog, setActionLog] = useState<InternalActionLog[]>([]);
   const [arenaState, setArenaState] = useState(ARENA_MODE_IDLE);
   const [editMode, setEditMode] = useState(false);
-  const [match, setMatch] = useState(undefined as undefined | MatchData);
-  const [draft, setDraft] = useState(undefined as undefined | DraftData);
+  const [match, setMatch] = useState<undefined | MatchData>(undefined);
+  const [draft, setDraft] = useState<undefined | DraftData>(undefined);
   const [draftState, setDraftState] = useState({ packN: 0, pickN: 0 });
   const [turnPriority, setTurnPriority] = useState(1);
-  const [settings, setSettings] = useState(playerData.settings as SettingsData);
+  const [settings, setSettings] = useState(playerData.settings);
   const [lastBeep, setLastBeep] = useState(Date.now());
-  const [hoverCard, setHoverCard] = useState(
-    undefined as undefined | DbCardData
-  );
+  const dispatcher = useDispatch();
 
   const {
     overlay_scale: overlayScale,
@@ -191,6 +191,7 @@ export default function OverlayController(): JSX.Element {
   );
 
   const handleSettingsUpdated = useCallback((): void => {
+    dispatchAction(dispatcher, SET_HOVER_SIZE, playerData.cardsSizeHoverCard);
     setSettings({ ...playerData.settings });
   }, []);
 
@@ -251,16 +252,12 @@ export default function OverlayController(): JSX.Element {
     match,
     settings,
     setDraftStateCallback: setDraftState,
-    setHoverCardCallback: (card?: DbCardData): void => setHoverCard(card),
     setOddsCallback,
     turnPriority
   };
 
-  const { cardsSizeHoverCard } = playerData;
   const cardDetailsProps = {
     arenaState,
-    card: hoverCard,
-    cardsSizeHoverCard,
     editMode,
     handleToggleEditMode,
     odds: match ? match.playerCardsOdds : undefined,

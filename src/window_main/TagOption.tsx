@@ -1,6 +1,9 @@
+/*
+  Not used / deprecated?
+*/
 import Aggregator from "./aggregator";
 import React from "react";
-import { getTagColor } from "./renderer-util";
+import { getTagColor } from "./rendererUtil";
 import { getReadableFormat } from "../shared/util";
 
 export interface TagOptionProps {

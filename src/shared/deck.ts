@@ -1,8 +1,9 @@
 import {
   anyCardsList,
-  ArenaV3Deck,
+  CardObject,
   InternalDeck,
-  isInternalDeck
+  isV2CardsList,
+  v2cardsList
 } from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
 import CardsList from "./cardsList";
@@ -30,6 +31,8 @@ const defaultDeck: Partial<InternalDeck> = {
 class Deck {
   private mainboard: CardsList;
   private sideboard: CardsList;
+  private readonly arenaMain: Readonly<v2cardsList>;
+  private readonly arenaSide: Readonly<v2cardsList>;
   private commandZoneGRPIds: number[];
   private name: string;
   public id: string;
@@ -43,19 +46,26 @@ class Deck {
   public description: string;
 
   constructor(
-    mtgaDeck: InternalDeck | ArenaV3Deck | Partial<InternalDeck> = defaultDeck,
-    main: anyCardsList = [],
-    side: anyCardsList = []
+    mtgaDeck: Partial<InternalDeck> = {},
+    main?: anyCardsList,
+    side?: anyCardsList,
+    arenaMain?: Readonly<anyCardsList>,
+    arenaSide?: Readonly<anyCardsList>
   ) {
-    if (!mtgaDeck.mainDeck) mtgaDeck.mainDeck = [];
-    if (!mtgaDeck.sideboard) mtgaDeck.sideboard = [];
-    if (main.length > 0) mtgaDeck.mainDeck = main;
-    if (side.length > 0) mtgaDeck.sideboard = side;
-
-    this.mainboard = new CardsList(mtgaDeck.mainDeck);
-    this.sideboard = new CardsList(mtgaDeck.sideboard);
-    this.commandZoneGRPIds = mtgaDeck.commandZoneGRPIds || [];
-    this.name = mtgaDeck.name || "";
+    // Putting these as default argument values works in tests, but throws an
+    // undefined reference error in production.
+    main = main ?? mtgaDeck.mainDeck ?? [];
+    side = side ?? mtgaDeck.sideboard ?? [];
+    arenaMain = arenaMain ?? main;
+    arenaSide = arenaSide ?? side;
+    this.mainboard = new CardsList(main);
+    this.sideboard = new CardsList(side);
+    this.arenaMain = Deck.toLoggedList(arenaMain);
+    this.arenaSide = Deck.toLoggedList(arenaSide);
+    this.commandZoneGRPIds = mtgaDeck.commandZoneGRPIds ?? [];
+    this.name = mtgaDeck.name ?? "";
+    this.id = mtgaDeck.id ?? "";
+    this.lastUpdated = mtgaDeck.lastUpdated ?? "";
     this.tile = mtgaDeck.deckTileId ? mtgaDeck.deckTileId : DEFAULT_TILE;
     this._colors = this.getColors();
     this.format = mtgaDeck.format || "";
@@ -77,6 +87,35 @@ class Deck {
       : new Date();
 
     return this;
+  }
+
+  private static toLoggedList(
+    list: Readonly<anyCardsList>
+  ): Readonly<v2cardsList> {
+    if (isV2CardsList(list)) {
+      return Object.freeze(
+        list.map(({ id, quantity }: CardObject) =>
+          Object.freeze({
+            id,
+            quantity
+          })
+        )
+      );
+    } else {
+      const loggedList = [];
+      let lastObj: CardObject | undefined = undefined;
+      for (let id of list) {
+        if (lastObj === undefined || lastObj.id !== id) {
+          Object.freeze(lastObj);
+          lastObj = { id: id, quantity: 1 };
+          loggedList.push(lastObj);
+        } else {
+          lastObj.quantity++;
+        }
+      }
+      Object.freeze(lastObj);
+      return Object.freeze(loggedList);
+    }
   }
 
   /**
@@ -166,9 +205,13 @@ class Deck {
       commandZoneGRPIds: this.commandZoneGRPIds
     };
 
-    const ret = new Deck(objectClone(obj), main, side);
-
-    return ret;
+    return new Deck(
+      objectClone(obj),
+      main,
+      side,
+      this.arenaMain,
+      this.arenaSide
+    );
   }
 
   /**
@@ -212,11 +255,11 @@ class Deck {
 
     if (countMainboard) {
       this.mainboard.get().forEach(cardObj => {
-        const grpid = cardObj.id;
-        const card = db.card(grpid);
+        let grpid = cardObj.id;
+        let card = db.card(grpid);
         if (card !== undefined) {
-          const rarity = card.rarity;
-          const add = get_wc_missing(this.getSaveRaw(), grpid, false);
+          let rarity = card.rarity;
+          let add = get_wc_missing(this, grpid, false);
           missing[rarity] += add;
         }
       });
@@ -224,11 +267,11 @@ class Deck {
 
     if (countSideboard) {
       this.sideboard.get().forEach(cardObj => {
-        const grpid = cardObj.id;
-        const card = db.card(grpid);
+        let grpid = cardObj.id;
+        let card = db.card(grpid);
         if (card !== undefined) {
-          const rarity = card.rarity;
-          const add = get_wc_missing(this.getSaveRaw(), grpid, true);
+          let rarity = card.rarity;
+          let add = get_wc_missing(this, grpid, false);
           missing[rarity] += add;
         }
       });
@@ -314,17 +357,21 @@ class Deck {
   /**
    * Returns a copy of this deck as an object.
    */
-  getSave(): InternalDeck {
-    return objectClone(this.getSaveRaw());
+  getSave(includeAsLogged = false): InternalDeck {
+    return objectClone(this.getSaveRaw(includeAsLogged));
   }
 
   /**
    * Returns a copy of this deck as an object, but maintains variables references.
    */
-  getSaveRaw(): InternalDeck {
+  getSaveRaw(includeAsLogged = false): InternalDeck {
     return {
       mainDeck: this.mainboard.get(),
       sideboard: this.sideboard.get(),
+      ...(includeAsLogged && {
+        arenaMain: this.arenaMain,
+        arenaSide: this.arenaSide
+      }),
       name: this.name,
       id: this.id,
       lastUpdated: this.lastUpdated.toISOString(),
@@ -341,7 +388,7 @@ class Deck {
 
   /**
    * Returns a unique string for this deck. (not hashed)
-   * @param checkSide weter or not to use the sideboard (default: true)
+   * @param checkSide whether or not to use the sideboard (default: true)
    */
   getUniqueString(checkSide = true): string {
     this.sortMainboard(compare_cards);
