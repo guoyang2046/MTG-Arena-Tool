@@ -25,9 +25,9 @@ function saveCourse(json: InternalEvent): void {
   };
 
   if (!playerData.courses_index.includes(id)) {
-    const courses_index = [...playerData.courses_index, id];
-    playerDb.upsert("", "courses_index", courses_index);
-    setData({ courses_index }, false);
+    const coursesIndex = [...playerData.courses_index, id];
+    playerDb.upsert("", "courses_index", coursesIndex);
+    setData({ coursesIndex }, false);
   }
 
   playerDb.upsert("", id, eventData);

@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { completeMatch } from "./data";
 import globals from "./globals";
 import playerData from "../shared/PlayerData";
@@ -26,9 +25,9 @@ export default function saveMatch(id: string, matchEndTime: number): void {
 
   // console.log("Save match:", match);
   if (!playerData.matches_index.includes(id)) {
-    const matches_index = [...playerData.matches_index, id];
-    playerDb.upsert("", "matches_index", matches_index);
-    setData({ matches_index }, false);
+    const matchesIndex = [...playerData.matches_index, id];
+    playerDb.upsert("", "matches_index", matchesIndex);
+    setData({ matchesIndex }, false);
   }
 
   playerDb.upsert("", id, match);

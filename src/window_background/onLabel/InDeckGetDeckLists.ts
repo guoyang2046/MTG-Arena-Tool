@@ -15,12 +15,12 @@ export default function InDeckGetDeckLists(
   if (json.length == 0) return;
 
   const decks = { ...playerData.decks };
-  const static_decks: any[] = [];
+  const staticDecks: any[] = [];
   json.forEach(deck => {
     const deckData = { ...(playerData.deck(deck.id) || {}), ...deck };
     decks[deck.id] = deckData;
-    static_decks.push(deck.id);
+    staticDecks.push(deck.id);
   });
 
-  setData({ decks, static_decks });
+  setData({ decks, staticDecks });
 }

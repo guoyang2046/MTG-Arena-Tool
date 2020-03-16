@@ -33,7 +33,7 @@ export default function RankUpdated(entry: Entry): void {
   rank[updateType].step = newJson.newStep;
   rank[updateType].seasonOrdinal = newJson.seasonOrdinal;
 
-  const seasonal_rank = playerData.addSeasonalRank(
+  const seasonalRank = playerData.addSeasonalRank(
     newJson,
     newJson.seasonOrdinal,
     updateType
@@ -42,7 +42,7 @@ export default function RankUpdated(entry: Entry): void {
   const httpApi = require("../httpApi");
   httpApi.httpSetSeasonal(newJson);
 
-  setData({ rank, seasonal_rank });
+  setData({ rank, seasonalRank });
   playerDb.upsert("", "rank", rank);
-  playerDb.upsert("", "seasonal_rank", seasonal_rank);
+  playerDb.upsert("", "seasonal_rank", seasonalRank);
 }

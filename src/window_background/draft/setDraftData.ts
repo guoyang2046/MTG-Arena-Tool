@@ -13,9 +13,9 @@ export default function setDraftData(data: any): void {
 
   // console.log("Set draft data:", data);
   if (!playerData.draft_index.includes(id)) {
-    const draft_index = [...playerData.draft_index, id];
-    playerDb.upsert("", "draft_index", draft_index);
-    setData({ draft_index }, false);
+    const draftIndex = [...playerData.draft_index, id];
+    playerDb.upsert("", "draft_index", draftIndex);
+    setData({ draftIndex }, false);
   }
 
   playerDb.upsert("", id, data);

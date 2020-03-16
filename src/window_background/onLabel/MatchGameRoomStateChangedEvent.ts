@@ -17,7 +17,7 @@ interface Entry extends LogEntry {
 export default function onLabelMatchGameRoomStateChangedEvent(
   entry: Entry
 ): void {
-  let json = entry.json();
+  const json = entry.json();
   if (!json) return;
 
   const gameRoom = json.matchGameRoomStateChangedEvent.gameRoomInfo;

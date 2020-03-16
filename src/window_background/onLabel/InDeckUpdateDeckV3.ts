@@ -104,13 +104,13 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
 
   if (foundNewDeckChange) {
     playerDb.upsert("deck_changes", changeId, deltaDeck);
-    const deck_changes = { ...playerData.deck_changes, [changeId]: deltaDeck };
-    const deck_changes_index = [...playerData.deck_changes_index];
-    if (!deck_changes_index.includes(changeId)) {
-      deck_changes_index.push(changeId);
+    const deckChanges = { ...playerData.deck_changes, [changeId]: deltaDeck };
+    const deckChangesIndex = [...playerData.deck_changes_index];
+    if (!deckChangesIndex.includes(changeId)) {
+      deckChangesIndex.push(changeId);
     }
-    playerDb.upsert("", "deck_changes_index", deck_changes_index);
-    setData({ deck_changes, deck_changes_index });
+    playerDb.upsert("", "deck_changes_index", deckChangesIndex);
+    setData({ deckChanges, deckChangesIndex });
   }
 
   const deckData = { ..._deck, ...entryDeck };

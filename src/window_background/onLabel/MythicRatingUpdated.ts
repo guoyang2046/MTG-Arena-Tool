@@ -48,13 +48,13 @@ export default function MythicRatingUpdated(entry: Entry): void {
   rank.constructed.percentile = newJson.newMythicPercentile;
   rank.constructed.leaderboardPlace = newJson.newMythicLeaderboardPlacement;
 
-  const seasonal_rank = playerData.addSeasonalRank(
+  const seasonalRank = playerData.addSeasonalRank(
     newJson,
     rank.constructed.seasonOrdinal,
     type
   );
 
-  setData({ rank, seasonal_rank });
+  setData({ rank, seasonalRank });
   playerDb.upsert("", "rank", rank);
-  playerDb.upsert("", "seasonal_rank", seasonal_rank);
+  playerDb.upsert("", "seasonal_rank", seasonalRank);
 }

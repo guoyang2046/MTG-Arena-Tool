@@ -14,9 +14,9 @@ export default function saveEconomyTransaction(
   };
 
   if (!playerData.economy_index.includes(id)) {
-    const economy_index = [...playerData.economy_index, id];
-    playerDb.upsert("", "economy_index", economy_index);
-    setData({ economy_index }, false);
+    const economyIndex = [...playerData.economy_index, id];
+    playerDb.upsert("", "economy_index", economyIndex);
+    setData({ economyIndex }, false);
   }
 
   playerDb.upsert("", id, txnData);
