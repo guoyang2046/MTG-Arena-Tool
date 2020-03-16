@@ -3,7 +3,7 @@ import convertDeckFromV3 from "../convertDeckFromV3";
 import db from "../../shared/database";
 import LogEntry from "../../types/logDecoder";
 import { playerDb } from "../../shared/db/LocalDatabase";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { setData } from "../backgroundUtil";
 import { ArenaV3Deck } from "../../types/Deck";
 

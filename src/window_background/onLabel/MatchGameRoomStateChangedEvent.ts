@@ -1,7 +1,7 @@
 import { ARENA_MODE_IDLE } from "../../shared/constants";
 import { objectClone } from "../../shared/util";
 
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import globals from "../globals";
 import { ipcSend, parseWotcTimeFallback } from "../backgroundUtil";
 import LogEntry from "../../types/logDecoder";

@@ -1,4 +1,4 @@
-import playerData from "../shared/player-data";
+import playerData from "../shared/PlayerData";
 import { setData } from "./backgroundUtil";
 import { playerDb } from "../shared/db/LocalDatabase";
 import { InternalEconomyTransaction } from "../types/inventory";

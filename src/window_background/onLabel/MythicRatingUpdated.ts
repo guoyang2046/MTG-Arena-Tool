@@ -1,7 +1,7 @@
 import db from "../../shared/database";
 import { playerDb } from "../../shared/db/LocalDatabase";
 
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import globals from "../globals";
 import { parseWotcTimeFallback, setData } from "../backgroundUtil";
 

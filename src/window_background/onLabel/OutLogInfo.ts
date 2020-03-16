@@ -2,7 +2,7 @@ import _ from "lodash";
 
 import { ARENA_MODE_IDLE } from "../../shared/constants";
 import db from "../../shared/database";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import LogEntry from "../../types/logDecoder";
 import { LogInfo } from "../../types/log";
 import { MatchGameStats } from "../../types/currentMatch";

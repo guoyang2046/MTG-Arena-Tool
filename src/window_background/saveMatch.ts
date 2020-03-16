@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { completeMatch } from "./data";
 import globals from "./globals";
-import playerData from "../shared/player-data";
+import playerData from "../shared/PlayerData";
 import { playerDb } from "../shared/db/LocalDatabase";
 import { ipcSend, setData } from "./backgroundUtil";
 

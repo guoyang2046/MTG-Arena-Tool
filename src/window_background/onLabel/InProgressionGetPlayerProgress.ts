@@ -1,7 +1,7 @@
 import LogEntry from "../../types/logDecoder";
 import { setData } from "../backgroundUtil";
 import { playerDb } from "../../shared/db/LocalDatabase";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { PlayerProgression } from "../../types/progression";
 
 interface Entry extends LogEntry {

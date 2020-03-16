@@ -1,7 +1,7 @@
 // PROBABLY DEPRECATED
 import { playerDb } from "../../shared/db/LocalDatabase";
 import Deck from "../../shared/deck";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { InternalEvent } from "../../types/event";
 import LogEntry from "../../types/logDecoder";
 import addCustomDeck from "../addCustomDeck";

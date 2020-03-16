@@ -1,5 +1,5 @@
 import { playerDb } from "../../shared/db/LocalDatabase";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { setData } from "../backgroundUtil";
 
 export default function clearDraftData(draftId: string): void {

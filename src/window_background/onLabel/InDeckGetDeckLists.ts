@@ -1,4 +1,4 @@
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { ArenaV3Deck } from "../../types/Deck";
 import LogEntry from "../../types/logDecoder";
 import { setData } from "../backgroundUtil";

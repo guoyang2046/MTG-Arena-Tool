@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import differenceInDays from "date-fns/differenceInDays";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { setData } from "../backgroundUtil";
 import { playerDb } from "../../shared/db/LocalDatabase";
 import LogEntry from "../../types/logDecoder";

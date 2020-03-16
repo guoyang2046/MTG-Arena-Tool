@@ -1,4 +1,4 @@
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import globals from "../globals";
 import createDraft from "./createDraft";
 

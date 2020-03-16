@@ -1,6 +1,6 @@
 import { IPC_OVERLAY } from "../../shared/constants";
 import { playerDb } from "../../shared/db/LocalDatabase";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { ipcSend, setData } from "../backgroundUtil";
 
 // REVIEW

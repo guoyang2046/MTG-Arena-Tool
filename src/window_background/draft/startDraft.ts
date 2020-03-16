@@ -1,5 +1,5 @@
 import { ARENA_MODE_DRAFT } from "../../shared/constants";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { ipcSend } from "../backgroundUtil";
 import globals from "../globals";
 

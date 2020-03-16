@@ -1,5 +1,5 @@
 import { playerDb } from "../../shared/db/LocalDatabase";
-import playerData from "../../shared/player-data";
+import playerData from "../../shared/PlayerData";
 import { parseWotcTimeFallback, setData } from "../backgroundUtil";
 import LogEntry from "../../types/logDecoder";
 import saveEconomyTransaction from "../saveEconomyTransaction";
