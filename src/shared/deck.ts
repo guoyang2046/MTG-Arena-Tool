@@ -4,7 +4,8 @@ import {
   InternalDeck,
   isV2CardsList,
   v2cardsList,
-  isInternalDeck
+  isInternalDeck,
+  ArenaV3Deck
 } from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
 import CardsList from "./cardsList";
@@ -47,7 +48,7 @@ class Deck {
   public description: string;
 
   constructor(
-    mtgaDeck: Partial<InternalDeck> = {},
+    mtgaDeck: Partial<InternalDeck> | ArenaV3Deck = {},
     main?: anyCardsList,
     side?: anyCardsList,
     arenaMain?: Readonly<anyCardsList>,
