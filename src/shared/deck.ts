@@ -3,7 +3,8 @@ import {
   CardObject,
   InternalDeck,
   isV2CardsList,
-  v2cardsList
+  v2cardsList,
+  isInternalDeck
 } from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
 import CardsList from "./cardsList";
@@ -65,7 +66,9 @@ class Deck {
     this.commandZoneGRPIds = mtgaDeck.commandZoneGRPIds ?? [];
     this.name = mtgaDeck.name ?? "";
     this.id = mtgaDeck.id ?? "";
-    this.lastUpdated = mtgaDeck.lastUpdated ?? "";
+    this.lastUpdated = mtgaDeck.lastUpdated
+      ? new Date(mtgaDeck.lastUpdated)
+      : new Date();
     this.tile = mtgaDeck.deckTileId ? mtgaDeck.deckTileId : DEFAULT_TILE;
     this._colors = this.getColors();
     this.format = mtgaDeck.format || "";
@@ -104,7 +107,7 @@ class Deck {
     } else {
       const loggedList = [];
       let lastObj: CardObject | undefined = undefined;
-      for (let id of list) {
+      for (const id of list) {
         if (lastObj === undefined || lastObj.id !== id) {
           Object.freeze(lastObj);
           lastObj = { id: id, quantity: 1 };
@@ -255,11 +258,11 @@ class Deck {
 
     if (countMainboard) {
       this.mainboard.get().forEach(cardObj => {
-        let grpid = cardObj.id;
-        let card = db.card(grpid);
+        const grpid = cardObj.id;
+        const card = db.card(grpid);
         if (card !== undefined) {
-          let rarity = card.rarity;
-          let add = get_wc_missing(this, grpid, false);
+          const rarity = card.rarity;
+          const add = get_wc_missing(this, grpid, false);
           missing[rarity] += add;
         }
       });
@@ -267,11 +270,11 @@ class Deck {
 
     if (countSideboard) {
       this.sideboard.get().forEach(cardObj => {
-        let grpid = cardObj.id;
-        let card = db.card(grpid);
+        const grpid = cardObj.id;
+        const card = db.card(grpid);
         if (card !== undefined) {
-          let rarity = card.rarity;
-          let add = get_wc_missing(this, grpid, false);
+          const rarity = card.rarity;
+          const add = get_wc_missing(this, grpid, false);
           missing[rarity] += add;
         }
       });
