@@ -192,7 +192,6 @@ export default function OverlayController(): JSX.Element {
   const { setHoverSize } = hoverSlice.actions;
   const handleSettingsUpdated = useCallback(
     (event: unknown, arg: string): void => {
-      console.log(typeof arg, arg);
       try {
         const json = JSON.parse(arg);
         dispatcher(setHoverSize(json.cardsSizeHoverCard));
