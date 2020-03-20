@@ -419,7 +419,10 @@ function setSettings(settingsArg: any): void {
   mainWindow?.webContents.send("settings_updated");
 
   // Send settings update
-  overlay?.setAlwaysOnTop(settingsData.overlay_ontop, "floating");
+  overlay?.setAlwaysOnTop(settingsData.overlay_ontop, "pop-up-menu");
+  if (settingsData.overlay_ontop && overlay && !overlay.isAlwaysOnTop()) {
+    overlay.moveTop();
+  }
   overlay?.webContents.send("settings_updated");
 
   updateOverlayVisibility();
