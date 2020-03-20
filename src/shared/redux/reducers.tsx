@@ -7,7 +7,6 @@ import { MergedSettings } from "../../types/settings";
 export const SET_BACKGROUND_IMAGE = "SET_BACKGROUND_IMAGE";
 export const SET_BACKGROUND_GRPID = "SET_BACKGROUND_GRPID";
 export const SET_BACKGROUND_COLOR = "SET_BACKGROUND_COLOR";
-export const SET_SETTINGS = "SET_SETTINGS";
 export const SET_TOP_ARTIST = "SET_TOP_ARTIST";
 export const SET_OFFLINE = "SET_OFFLINE";
 export const SET_SUB_NAV = "SET_SUB_NAV";
@@ -49,21 +48,19 @@ const backgroundGrpId = (
   }
 };
 
-const settings = (
-  state: MergedSettings = defaultState.settings,
-  action: Action
-): MergedSettings => {
-  switch (action.type) {
-    case SET_SETTINGS:
-      return action.value;
-    case SET_BACKGROUND_IMAGE:
-      return { ...state, back_url: action.value };
-    case SET_BACKGROUND_COLOR:
-      return { ...state, back_color: action.value };
-    default:
-      return state;
+export const settingsSlice = createSlice({
+  name: "settings",
+  initialState: defaultState.settings,
+  reducers: {
+    setSettings: (state, action): void => action.payload,
+    setBackgroundImage: (state, action): void => {
+      state.back_url = action.payload;
+    },
+    setBackgroundColor: (state, action): void => {
+      state.back_color = action.payload;
+    }
   }
-};
+});
 
 const topArtist = (
   state: string = defaultState.topArtist,
@@ -332,7 +329,7 @@ const shareDialog = (
 
 export default combineReducers({
   backgroundGrpId: backgroundGrpId,
-  settings: settings,
+  settings: settingsSlice.reducer,
   topArtist: topArtist,
   hover: hoverSlice.reducer,
   offline: offline,

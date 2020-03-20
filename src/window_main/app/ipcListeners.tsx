@@ -15,10 +15,10 @@ import {
   SET_HOME_DATA,
   SET_POPUP,
   SET_PATREON,
-  SET_SETTINGS,
   SET_UPDATE_STATE,
   SET_NO_LOG,
   SET_SHARE_DIALOG_URL,
+  settingsSlice,
   loadingSlice,
   exploreSlice,
   topNavSlice,
@@ -174,7 +174,8 @@ export default function ipcListeners(dispatcher: any): void {
   ipc.on("settings_updated", (): void => {
     dispatcher(setTopNav(pd.settings.last_open_tab ?? MAIN_HOME));
     dispatcher(setHoverSize(pd.cardsSizeHoverCard));
-    dispatchAction(dispatcher, SET_SETTINGS, pd.settings);
+    // probably not needed anymore?
+    dispatcher(settingsSlice.actions.setSettings(pd.settings));
   });
 
   ipc.on("no_log", (): void => {

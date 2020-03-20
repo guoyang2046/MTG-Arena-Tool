@@ -1,7 +1,7 @@
 import { ipcRenderer as ipc, webFrame } from "electron";
 import { Howl, Howler } from "howler";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import striptags from "striptags";
 import {
   ARENA_MODE_IDLE,
@@ -10,14 +10,14 @@ import {
   IPC_OVERLAY
 } from "../shared/constants";
 import Deck from "../shared/deck";
-import playerData from "../shared/PlayerData";
-import { hoverSlice } from "../shared/redux/reducers";
+import { hoverSlice, settingsSlice } from "../shared/redux/reducers";
 import { MatchData } from "../types/currentMatch";
 import { DraftData } from "../types/draft";
 import { InternalActionLog } from "../types/log";
 import { OverlaySettingsData } from "../types/settings";
 import CardDetailsWindowlet from "./CardDetailsWindowlet";
 import OverlayWindowlet from "./OverlayWindowlet";
+import { AppState } from "../shared/redux/appState";
 
 const sound = new Howl({ src: ["../sounds/blip.mp3"] });
 
@@ -46,8 +46,7 @@ function setOddsCallback(sampleSize: number): void {
 /**
  * This is the React control component at the root of the overlay process.
  * It should handle all of the IPC traffic with other processes and manage all
- * of the data-related state for the overlays (except for PlayerData, which
- * still handles "set_player_data").
+ * of the data-related state for the overlays.
  *
  * Overlay React hierarchy:
  * - OverlayController (state and IPC control)
@@ -69,7 +68,7 @@ export default function OverlayController(): JSX.Element {
   const [draft, setDraft] = useState<undefined | DraftData>(undefined);
   const [draftState, setDraftState] = useState({ packN: 0, pickN: 0 });
   const [turnPriority, setTurnPriority] = useState(1);
-  const [settings, setSettings] = useState(playerData.settings);
+  const settings = useSelector((state: AppState) => state.settings);
   const [lastBeep, setLastBeep] = useState(Date.now());
   const dispatcher = useDispatch();
 
@@ -84,6 +83,7 @@ export default function OverlayController(): JSX.Element {
   useEffect(() => {
     webFrame.setZoomFactor(overlayScale / 100);
   }, [overlayScale]);
+
   useEffect(() => {
     document.body.style.backgroundColor = editMode
       ? "rgba(0, 0, 0, 0.3)"
@@ -190,10 +190,19 @@ export default function OverlayController(): JSX.Element {
   );
 
   const { setHoverSize } = hoverSlice.actions;
-  const handleSettingsUpdated = useCallback((): void => {
-    dispatcher(setHoverSize(playerData.cardsSizeHoverCard));
-    setSettings({ ...playerData.settings });
-  }, [dispatcher, setHoverSize]);
+  const handleSettingsUpdated = useCallback(
+    (event: unknown, arg: string): void => {
+      console.log(typeof arg, arg);
+      try {
+        const json = JSON.parse(arg);
+        dispatcher(setHoverSize(json.cardsSizeHoverCard));
+        dispatcher(settingsSlice.actions.setSettings(json.settings));
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [dispatcher, setHoverSize]
+  );
 
   const handleSetMatch = useCallback((event: unknown, arg: string): void => {
     const newMatch = JSON.parse(arg);
