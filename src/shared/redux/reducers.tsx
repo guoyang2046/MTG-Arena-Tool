@@ -4,9 +4,7 @@ import { defaultState } from "./appState";
 import { WildcardsChange } from "../../window_main/tabs/HomeTab";
 import { MergedSettings } from "../../types/settings";
 
-export const SET_BACKGROUND_IMAGE = "SET_BACKGROUND_IMAGE";
 export const SET_BACKGROUND_GRPID = "SET_BACKGROUND_GRPID";
-export const SET_BACKGROUND_COLOR = "SET_BACKGROUND_COLOR";
 export const SET_TOP_ARTIST = "SET_TOP_ARTIST";
 export const SET_OFFLINE = "SET_OFFLINE";
 export const SET_SUB_NAV = "SET_SUB_NAV";
@@ -53,6 +51,7 @@ export const settingsSlice = createSlice({
   initialState: defaultState.settings,
   reducers: {
     setSettings: (state, action): void => action.payload,
+    // Unused? they are currently updated like any other setting
     setBackgroundImage: (state, action): void => {
       state.back_url = action.payload;
     },
