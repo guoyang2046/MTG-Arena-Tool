@@ -18,18 +18,14 @@ import {
   MAIN_CONSTRUCTED,
   MAIN_LIMITED
 } from "../../../shared/constants";
-import {
-  SET_TOP_NAV,
-  dispatchAction,
-  SET_BACKGROUND_GRPID
-} from "../../../shared/redux/reducers";
+import { rendererSlice } from "../../../shared/redux/reducers";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "../../../shared/redux/appState";
+import { AppState } from "../../../shared/redux/reducers";
 import useWindowSize from "../../hooks/useWindowSize";
 import uxMove from "../../uxMove";
 
 interface TopNavItemProps {
-  dispatcher: unknown;
+  dispatcher: any;
   currentTab: number;
   compact: boolean;
   id: number;
@@ -37,15 +33,16 @@ interface TopNavItemProps {
 }
 
 function TopNavItem(props: TopNavItemProps): JSX.Element {
-  const { currentTab, compact, id, title } = props;
+  const { currentTab, compact, dispatcher, id, title } = props;
 
   const clickTab = React.useCallback(
     (tabId: number) => (): void => {
-      dispatchAction(props.dispatcher, SET_TOP_NAV, tabId);
-      dispatchAction(props.dispatcher, SET_BACKGROUND_GRPID, 0);
+      const { setBackgroundGrpId, setTopNav } = rendererSlice.actions;
+      dispatcher(setTopNav(tabId));
+      dispatcher(setBackgroundGrpId(0));
       uxMove(0);
     },
-    [props.dispatcher]
+    [dispatcher]
   );
 
   return compact ? (
@@ -85,7 +82,7 @@ function TopNavItem(props: TopNavItemProps): JSX.Element {
 }
 
 interface TopRankProps {
-  dispatcher: unknown;
+  dispatcher: any;
   currentTab: number;
   id: number;
   rank: any | null;
@@ -93,16 +90,17 @@ interface TopRankProps {
 }
 
 function TopRankIcon(props: TopRankProps): JSX.Element {
-  const { currentTab, id, rank, rankClass } = props;
+  const { currentTab, dispatcher, id, rank, rankClass } = props;
 
   const selected = currentTab === id;
   const clickTab = React.useCallback(
     tabId => (): void => {
-      dispatchAction(props.dispatcher, SET_TOP_NAV, tabId);
-      dispatchAction(props.dispatcher, SET_BACKGROUND_GRPID, 0);
+      const { setBackgroundGrpId, setTopNav } = rendererSlice.actions;
+      dispatcher(setTopNav(tabId));
+      dispatcher(setBackgroundGrpId(0));
       uxMove(0);
     },
-    [props.dispatcher]
+    [dispatcher]
   );
 
   if (rank == null) {
@@ -134,7 +132,7 @@ function TopRankIcon(props: TopRankProps): JSX.Element {
 
 function PatreonBadge(): JSX.Element {
   const patreonTier = useSelector(
-    (state: AppState) => state.patreon.patreonTier
+    (state: AppState) => state.renderer.patreon.patreonTier
   );
 
   let title = "Patreon Basic Tier";
@@ -152,8 +150,10 @@ function PatreonBadge(): JSX.Element {
 
 export function TopNav(): JSX.Element {
   const [compact, setCompact] = React.useState(false);
-  const patreon = useSelector((state: AppState) => state.patreon.patreon);
-  const currentTab = useSelector((state: AppState) => state.topNav);
+  const patreon = useSelector(
+    (state: AppState) => state.renderer.patreon.patreon
+  );
+  const currentTab = useSelector((state: AppState) => state.renderer.topNav);
   const topNavIconsRef: any = React.useRef(null);
   const dispatcher = useDispatch();
   const windowSize = useWindowSize();
