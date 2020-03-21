@@ -1,16 +1,16 @@
 import _ from "lodash";
-import { app, remote, ipcRenderer as ipc } from "electron";
+import {app, remote, ipcRenderer as ipc} from "electron";
 import path from "path";
 import fs from "fs";
 import sha1 from "js-sha1";
 import * as httpApi from "./httpApi";
-import { appDb, playerDb } from "../shared/db/LocalDatabase";
-import { rememberDefaults } from "../shared/db/databaseUtil";
+import {appDb, playerDb} from "../shared/db/LocalDatabase";
+import {rememberDefaults} from "../shared/db/databaseUtil";
 import playerData from "../shared/PlayerData";
-import { getReadableFormat } from "../shared/util";
-import { HIDDEN_PW, MAIN_DECKS } from "../shared/constants";
-import { ipcSend, setData, unleakString } from "./backgroundUtil";
-import { createDeck } from "./data";
+import {getReadableFormat} from "../shared/util";
+import {HIDDEN_PW, MAIN_DECKS} from "../shared/constants";
+import {ipcSend, setData, unleakString} from "./backgroundUtil";
+import {createDeck} from "./data";
 import * as mtgaLog from "./mtgaLog";
 import globals from "./globals";
 import addCustomDeck from "./addCustomDeck";
@@ -19,12 +19,12 @@ import arenaLogWatcher from "./arena-log-watcher";
 import {
   backportNeDbToElectronStore,
   loadPlayerConfig,
-  syncSettings
+  syncSettings,
 } from "./loadPlayerConfig";
 import updateDeck from "./updateDeck";
 
 if (!remote.app.isPackaged) {
-  const { openNewGitHubIssue, debugInfo } = require("electron-util");
+  const {openNewGitHubIssue, debugInfo} = require("electron-util");
   const unhandled = require("electron-unhandled");
   unhandled({
     showDialog: true,
@@ -32,16 +32,23 @@ if (!remote.app.isPackaged) {
       openNewGitHubIssue({
         user: "Manuel-777",
         repo: "MTG-Arena-Tool",
-        body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`
+        body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`,
       });
-    }
+    },
   });
   const Sentry = require("@sentry/electron");
   Sentry.init({
-    dsn: "https://4ec87bda1b064120a878eada5fc0b10f@sentry.io/1778171"
+    dsn: "https://4ec87bda1b064120a878eada5fc0b10f@sentry.io/1778171",
   });
 }
 
+globals.replaysDir = path.join(
+  (app || remote.app).getPath("userData"),
+  "replays"
+);
+if (!fs.existsSync(globals.replaysDir)) {
+  fs.mkdirSync(globals.replaysDir);
+}
 globals.actionLogDir = path.join(
   (app || remote.app).getPath("userData"),
   "actionlogs"
@@ -62,7 +69,7 @@ const debugArenaID = undefined;
 ipc.on("save_app_settings", function(event, arg) {
   appDb.find("", "settings").then(appSettings => {
     appSettings.toolVersion = globals.toolVersion;
-    const updated = { ...appSettings, ...arg };
+    const updated = {...appSettings, ...arg};
     if (!updated.remember_me) {
       appDb.upsert("", "email", "");
       appDb.upsert("", "token", "");
@@ -76,7 +83,7 @@ ipc.on("save_app_settings", function(event, arg) {
 ipc.on("save_app_settings_norefresh", function(event, arg) {
   appDb.find("", "settings").then(appSettings => {
     appSettings.toolVersion = globals.toolVersion;
-    const updated = { ...appSettings, ...arg };
+    const updated = {...appSettings, ...arg};
     if (!updated.remember_me) {
       appDb.upsert("", "email", "");
       appDb.upsert("", "token", "");
@@ -117,7 +124,7 @@ ipc.on("backport_all_data", backportNeDbToElectronStore);
 //
 ipc.on("start_background", async function() {
   appDb.init("application"); // TODO is this redundant with init call in main?
-  setData({ appDbPath: appDb.filePath }, false);
+  setData({appDbPath: appDb.filePath}, false);
   fixBadSettingsData();
 
   let logUri = await appDb.find("", "logUri");
@@ -135,7 +142,7 @@ ipc.on("start_background", async function() {
       ...appSettings,
       logUri,
       email,
-      token
+      token,
     },
     rememberDefaults.settings
   );
@@ -152,9 +159,9 @@ ipc.on("start_background", async function() {
 });
 
 function offlineLogin() {
-  ipcSend("auth", { ok: true, user: -1 });
+  ipcSend("auth", {ok: true, user: -1});
   loadPlayerConfig(playerData.arenaId);
-  setData({ userName: "", offline: true });
+  setData({userName: "", offline: true});
 }
 
 //
@@ -165,7 +172,7 @@ ipc.on("login", function(event, arg) {
   } else if (arg.username === "" && arg.password === "") {
     offlineLogin();
   } else {
-    syncSettings({ token: "" }, false);
+    syncSettings({token: ""}, false);
     httpApi.httpAuth(arg.username, arg.password);
   }
 });
@@ -188,7 +195,7 @@ ipc.on("request_deck_link", function(event, obj) {
 //
 ipc.on("windowBounds", (event, windowBounds) => {
   if (globals.firstPass) return;
-  setData({ windowBounds }, false);
+  setData({windowBounds}, false);
   playerDb.upsert("", "windowBounds", windowBounds);
 });
 
@@ -197,10 +204,10 @@ ipc.on("overlayBounds", (event, index, bounds) => {
   const overlays = [...playerData.settings.overlays];
   const newOverlay = {
     ...overlays[index], // old overlay
-    bounds // new bounds
+    bounds, // new bounds
   };
   overlays[index] = newOverlay;
-  setData({ settings: { ...playerData.settings, overlays } }, false);
+  setData({settings: {...playerData.settings, overlays}}, false);
   playerDb.upsert("settings", "overlays", overlays);
 });
 
@@ -209,17 +216,17 @@ ipc.on("save_overlay_settings", function(event, settings) {
   // console.log("save_overlay_settings");
   if (settings.index === undefined) return;
 
-  const { index } = settings;
+  const {index} = settings;
   const overlays = playerData.settings.overlays.map((overlay, _index) => {
     if (_index === index) {
-      const updatedOverlay = { ...overlay, ...settings };
+      const updatedOverlay = {...overlay, ...settings};
       delete updatedOverlay.index;
       return updatedOverlay;
     }
     return overlay;
   });
 
-  const updated = { ...playerData.settings, overlays };
+  const updated = {...playerData.settings, overlays};
   playerDb.upsert("settings", "overlays", overlays);
   syncSettings(updated);
 });
@@ -248,7 +255,7 @@ ipc.on("import_custom_deck", function(event, arg) {
   if (!id || playerData.deckExists(id)) return;
   const deckData = {
     ...createDeck(),
-    ...data
+    ...data,
   };
   addCustomDeck(deckData);
 });
@@ -257,11 +264,11 @@ ipc.on("import_custom_deck", function(event, arg) {
 ipc.on("toggle_deck_archived", function(event, arg) {
   const id = arg;
   if (!playerData.deckExists(id)) return;
-  const deckData = { ...playerData.deck(id) };
+  const deckData = {...playerData.deck(id)};
   deckData.archived = !deckData.archived;
-  const decks = { ...playerData.decks, [id]: deckData };
+  const decks = {...playerData.decks, [id]: deckData};
 
-  setData({ decks });
+  setData({decks});
   playerDb.upsert("decks", id, deckData);
 });
 
@@ -270,10 +277,10 @@ ipc.on("toggle_archived", function(event, arg) {
   const id = arg;
   const item = playerData[id];
   if (!item) return;
-  const data = { ...item };
+  const data = {...item};
   data.archived = !data.archived;
 
-  setData({ [id]: data });
+  setData({[id]: data});
   playerDb.upsert("", id, data);
 });
 
@@ -298,15 +305,15 @@ ipc.on("request_home", (event, set) => {
 });
 
 ipc.on("edit_tag", (event, arg) => {
-  const { tag, color } = arg;
-  const tags_colors = { ...playerData.tags_colors, [tag]: color };
-  setData({ tags_colors });
+  const {tag, color} = arg;
+  const tags_colors = {...playerData.tags_colors, [tag]: color};
+  setData({tags_colors});
   playerDb.upsert("", "tags_colors", tags_colors);
   sendSettings();
 });
 
 ipc.on("delete_tag", (event, arg) => {
-  const { deckid, tag } = arg;
+  const {deckid, tag} = arg;
   const deck = playerData.deck(deckid);
   if (!deck || !tag) return;
   if (!deck.tags || !deck.tags.includes(tag)) return;
@@ -314,13 +321,13 @@ ipc.on("delete_tag", (event, arg) => {
   const tags = [...deck.tags];
   tags.splice(tags.indexOf(tag), 1);
 
-  const decks_tags = { ...playerData.decks_tags, [deckid]: tags };
-  setData({ decks_tags });
+  const decks_tags = {...playerData.decks_tags, [deckid]: tags};
+  setData({decks_tags});
   playerDb.upsert("", "decks_tags", decks_tags);
 });
 
 ipc.on("add_tag", (event, arg) => {
-  const { deckid, tag } = arg;
+  const {deckid, tag} = arg;
   const deck = playerData.deck(deckid);
   if (!deck || !tag) return;
   if (getReadableFormat(deck.format) === tag) return;
@@ -328,13 +335,13 @@ ipc.on("add_tag", (event, arg) => {
 
   const tags = [...deck.tags, tag];
 
-  const decks_tags = { ...playerData.decks_tags, [deckid]: tags };
-  setData({ decks_tags });
+  const decks_tags = {...playerData.decks_tags, [deckid]: tags};
+  setData({decks_tags});
   playerDb.upsert("", "decks_tags", decks_tags);
 });
 
 ipc.on("delete_matches_tag", (event, arg) => {
-  const { matchid, tag } = arg;
+  const {matchid, tag} = arg;
   const match = playerData.match(matchid);
   if (!match || !tag) return;
   if (!match.tags || !match.tags.includes(tag)) return;
@@ -342,21 +349,21 @@ ipc.on("delete_matches_tag", (event, arg) => {
   const tags = [...match.tags];
   tags.splice(tags.indexOf(tag), 1);
 
-  const matchData = { ...match, tags };
+  const matchData = {...match, tags};
 
-  setData({ [matchid]: matchData });
+  setData({[matchid]: matchData});
   playerDb.upsert(matchid, "tags", tags);
 });
 
 ipc.on("add_matches_tag", (event, arg) => {
-  const { matchid, tag } = arg;
+  const {matchid, tag} = arg;
   const match = playerData.match(matchid);
   if (!match || !tag) return;
   if (match.tags && match.tags.includes(tag)) return;
 
   const tags = [...(match.tags || []), tag];
 
-  setData({ [matchid]: { ...match, tags } });
+  setData({[matchid]: {...match, tags}});
   playerDb.upsert(matchid, "tags", tags);
   httpApi.httpSetDeckTag(tag, match.oppDeck, match.eventId);
 });
@@ -373,7 +380,7 @@ ipc.on("set_log", function(event, arg) {
     globals.stopWatchingLog();
     globals.stopWatchingLog = arenaLogWatcher.startWatchingLog(arg);
   }
-  syncSettings({ logUri: arg });
+  syncSettings({logUri: arg});
   appDb.upsert("", "logUri", arg).then(() => {
     remote.app.relaunch();
     remote.app.exit(0);
@@ -386,7 +393,7 @@ let prevLogSize = 0;
 
 function sendSettings() {
   let tags_colors = playerData.tags_colors;
-  let settingsData = { tags_colors };
+  let settingsData = {tags_colors};
   httpApi.httpSetSettings(settingsData);
 }
 
@@ -409,13 +416,13 @@ async function logLoop() {
       ipcSend("no_log", logUri);
       ipcSend("popup", {
         text: "No log file found. Please include the file name too.",
-        time: 1000
+        time: 1000,
       });
       return;
     }
   } else {
     ipcSend("no_log", logUri);
-    ipcSend("popup", { text: "No log file found.", time: 1000 });
+    ipcSend("popup", {text: "No log file found.", time: 1000});
     return;
   }
 
@@ -428,7 +435,7 @@ async function logLoop() {
   }
 */
 
-  const { size } = await mtgaLog.stat(logUri);
+  const {size} = await mtgaLog.stat(logUri);
 
   if (size == undefined) {
     // Something went wrong obtaining the file size, try again later
@@ -468,7 +475,7 @@ async function logLoop() {
 3) Open the View Account screen
 4) Enable Detailed logs.
 5) Restart Arena.`,
-        time: 0
+        time: 0,
       });
       detailedLogs = false;
     }
@@ -511,18 +518,18 @@ async function logLoop() {
   if (!playerData.arenaId || !playerData.name) {
     ipcSend("popup", {
       text: "output_log.txt contains no player data",
-      time: 0
+      time: 0,
     });
     return;
   }
 
   ipcSend("popup", {
     text: "Found Arena log for " + playerData.name,
-    time: 0
+    time: 0,
   });
   clearInterval(logLoopInterval);
 
-  const { auto_login, remember_me, email, token } = playerData.settings;
+  const {auto_login, remember_me, email, token} = playerData.settings;
   let username = "";
   let password = "";
   if (remember_me) {
@@ -535,7 +542,7 @@ async function logLoop() {
   ipcSend("prefill_auth_form", {
     username,
     password,
-    remember_me
+    remember_me,
   });
 
   if (auto_login) {
@@ -544,14 +551,14 @@ async function logLoop() {
       ipcSend("popup", {
         text: "Logging in automatically...",
         time: 0,
-        progress: 2
+        progress: 2,
       });
       httpApi.httpAuth(username, HIDDEN_PW);
     } else {
       ipcSend("popup", {
         text: "Launching offline mode automatically...",
         time: 0,
-        progress: 2
+        progress: 2,
       });
       offlineLogin();
     }

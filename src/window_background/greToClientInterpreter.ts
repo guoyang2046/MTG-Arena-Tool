@@ -683,7 +683,7 @@ export function GREMessageByID(msgId: number, time: Date): void {
 }
 
 export function GREMessage(message: GreMessage, time: Date): void {
-  //globals.currentMatch.GREtoClient[message.msgId] = message;
+  globals.currentMatch.GREtoClient[message.msgId] = message;
   globals.logTime = time;
 
   const fn = GREMessages[message.type];

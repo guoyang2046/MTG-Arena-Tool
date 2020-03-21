@@ -12,6 +12,8 @@ import {
 // Hopefully we'll be able to get rid of all of the ones that can change,
 // and put them into stores or better structures than a giant export list.
 
+let replaysDir = "";
+
 let actionLogDir = "";
 
 let currentDeck = new Deck();
@@ -57,6 +59,7 @@ let cardTypesByZone: ZoneData = {};
 let currentMatch: MatchData = matchDataDefault;
 
 export default {
+  replaysDir,
   actionLogDir,
   currentDeck,
   currentMatch,
