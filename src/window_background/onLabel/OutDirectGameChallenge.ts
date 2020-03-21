@@ -3,6 +3,7 @@ import LogEntry from "../../types/logDecoder";
 import selectDeck from "../selectDeck";
 import Deck from "../../shared/deck";
 import { ArenaV3Deck } from "../../types/Deck";
+import convertDeckFromV3 from "../convertDeckFromV3";
 
 interface EntryJson {
   params: {
@@ -22,7 +23,8 @@ export default function OutDirectGameChallenge(entry: Entry): void {
   if (!json) return;
   const deck = json.params.deck;
   const parsedDeck = JSON.parse(deck) as ArenaV3Deck;
-  selectDeck(new Deck(parsedDeck));
+  const v2Parsed = convertDeckFromV3(parsedDeck);
+  selectDeck(new Deck(v2Parsed));
 
   const httpApi = require("../httpApi");
   httpApi.httpTournamentCheck(

@@ -1,8 +1,8 @@
 import Deck from "../../shared/deck";
 import { PlayerCourse } from "../../types/event";
 import LogEntry from "../../types/logDecoder";
-import convertCourseDeck from "../convertCourseDeck";
 import selectDeck from "../selectDeck";
+import convertDeckFromV3 from "../convertDeckFromV3";
 
 interface Entry extends LogEntry {
   json: () => PlayerCourse;
@@ -11,6 +11,6 @@ interface Entry extends LogEntry {
 export default function onLabelInEventDeckSubmitV3(entry: Entry): void {
   const json = entry.json();
   if (!json) return;
-  const deck = new Deck(convertCourseDeck(json.CourseDeck));
+  const deck = new Deck(convertDeckFromV3(json.CourseDeck));
   selectDeck(deck);
 }

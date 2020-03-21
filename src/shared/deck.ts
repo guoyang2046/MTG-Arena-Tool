@@ -4,8 +4,7 @@ import {
   InternalDeck,
   isV2CardsList,
   v2cardsList,
-  isInternalDeck,
-  ArenaV3Deck
+  isInternalDeck
 } from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
 import CardsList from "./cardsList";
@@ -18,17 +17,6 @@ import {
   getWildcardsMissing,
   objectClone
 } from "./util";
-
-const defaultDeck: Partial<InternalDeck> = {
-  commandZoneGRPIds: [],
-  mainDeck: [],
-  sideboard: [],
-  name: "",
-  deckTileId: 0,
-  lastUpdated: new Date().toISOString(),
-  format: "",
-  type: "InternalDeck"
-};
 
 class Deck {
   private mainboard: CardsList;
@@ -48,7 +36,7 @@ class Deck {
   public description: string;
 
   constructor(
-    mtgaDeck: Partial<InternalDeck> | ArenaV3Deck = {},
+    mtgaDeck: Partial<InternalDeck> = {},
     main?: anyCardsList,
     side?: anyCardsList,
     arenaMain?: Readonly<anyCardsList>,

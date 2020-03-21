@@ -4,6 +4,7 @@ import { playerDb } from "../../shared/db/LocalDatabase";
 import { PlayerCourse } from "../../types/event";
 import addCustomDeck from "../addCustomDeck";
 import Deck from "../../shared/deck";
+import convertDeckFromV3 from "../convertDeckFromV3";
 
 interface Entry extends LogEntry {
   json: () => PlayerCourse[];
@@ -17,7 +18,8 @@ export default function InEventGetPlayerCoursesV2(entry: Entry): void {
   json.forEach(course => {
     if (course.CurrentEventState != "PreMatch") {
       if (course.CourseDeck != null) {
-        addCustomDeck(new Deck(course.CourseDeck).getSave());
+        const v2deck = convertDeckFromV3(course.CourseDeck);
+        addCustomDeck(v2deck);
       }
     }
     if (course.Id) staticEvents.push(course.Id);
