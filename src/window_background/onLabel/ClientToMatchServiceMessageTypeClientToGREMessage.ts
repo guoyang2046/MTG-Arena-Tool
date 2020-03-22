@@ -2,12 +2,17 @@
 import CardsList from "../../shared/cardsList";
 import globals from "../globals";
 import LogEntry from "../../types/logDecoder";
+import { normaliseFields } from "../backgroundUtil";
+import Deck from "../../shared/deck";
+import { v2cardsList } from "../../types/Deck";
 
 interface Payload {
   submitdeckresp: {
     deck: {
       deckcardsList: number[];
       sideboardcardsList: number[];
+      deckcards: v2cardsList; // might be v3?
+      sideboardcards: v2cardsList; // might be v3?
     };
   };
   type: string;
@@ -65,20 +70,24 @@ export default function ClientToMatchServiceMessageTypeClientToGREMessage(
   if (typeof payload == "string") {
     const msgType = entry.label.split("_")[1];
     payload = decodePayload(payload, msgType);
-    //console.log("Client To GRE: ", payload);
   }
+  // The sideboarding log message has changed format multiple times, sometimes
+  // going back to an earlier format. normaliseFields, together with the
+  // conditional decodePayload call, allows the same code to handle each known
+  // format in case Arena changes it again.
+  payload = normaliseFields(payload);
 
   if (payload.submitdeckresp) {
+    //console.log("Client To GRE: ", payload);
     // Get sideboard changes
     const deckResp = payload.submitdeckresp.deck;
 
-    const tempMain = new CardsList([]);
-    deckResp.deckcardsList.map(id => tempMain.add(id));
-    const tempSide = new CardsList([]);
-    deckResp.sideboardcardsList.map(id => tempSide.add(id));
+    const currentDeck = globals.currentMatch.player.deck.getSave();
 
-    const newDeck = globals.currentMatch.player.deck.clone();
-    newDeck.setMainboard(tempMain);
-    newDeck.setSideboard(tempSide);
+    globals.currentMatch.player.deck = new Deck(
+      currentDeck,
+      deckResp.deckcards,
+      deckResp.sideboardcards
+    );
   }
 }
