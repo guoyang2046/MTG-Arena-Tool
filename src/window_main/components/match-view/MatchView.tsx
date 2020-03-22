@@ -160,7 +160,7 @@ export function MatchView(props: MatchViewProps): JSX.Element {
               className={"button_simple centered"}
               text="Go back"
             ></Button>
-            <Replay replayStr={replayDataString} />
+            <Replay matchData={match} replayStr={replayDataString} />
           </>
         )}
       </div>
