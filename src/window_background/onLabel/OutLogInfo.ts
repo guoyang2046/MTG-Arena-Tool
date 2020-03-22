@@ -14,6 +14,7 @@ import getNameBySeat from "../getNameBySeat";
 import actionLog from "../actionLog";
 import saveMatch from "../saveMatch";
 import endDraft from "../draft/endDraft";
+import { getDeckChanges } from "../getDeckChanges";
 
 interface Entry extends LogEntry {
   json: () => LogInfo;
@@ -115,87 +116,24 @@ export default function OutLogInfo(entry: Entry): void {
       game.handsDrawn = payload.mulliganedHands.map(hand =>
         hand.map(card => card.grpId)
       );
-      game.handsDrawn.push(
-        game.shuffledOrder.slice(0, 7 - game.handsDrawn.length)
-      );
+      game.handsDrawn.push(game.shuffledOrder.slice(0, 7));
 
       if (globals.gameNumberCompleted > 1) {
         const originalDeck = globals.currentMatch.player.originalDeck.clone();
         const newDeck = globals.currentMatch.player.deck.clone();
-
-        const sideboardChanges: MatchGameStats["sideboardChanges"] = {
-          added: [],
-          removed: []
-        };
-
-        const mainDiff: { [key: string]: number } = {};
-        newDeck
-          .getMainboard()
-          .get()
-          .forEach(card => {
-            mainDiff[card.id] = (mainDiff[card.id] || 0) + card.quantity;
-          });
-        originalDeck
-          .getMainboard()
-          .get()
-          .forEach(card => {
-            if (mainDiff[card.id]) {
-              mainDiff[card.id] -= card.quantity;
-            }
-          });
-
-        Object.keys(mainDiff).forEach((id: string) => {
-          for (let i = 0; i < mainDiff[id]; i++) {
-            sideboardChanges.added.push(id);
-          }
-          //console.log(mainDiff[id] + " - " + db.card(id).name);
-        });
-
-        const sideDiff: { [key: string]: number } = {};
-        newDeck
-          .getSideboard()
-          .get()
-          .forEach(card => {
-            sideDiff[card.id] = (sideDiff[card.id] || 0) + card.quantity;
-          });
-        originalDeck
-          .getSideboard()
-          .get()
-          .forEach(card => {
-            if (sideDiff[card.id]) {
-              sideDiff[card.id] -= card.quantity;
-            }
-          });
-
-        Object.keys(sideDiff).forEach((id: string) => {
-          for (let i = 0; i < sideDiff[id]; i++) {
-            sideboardChanges.removed.push(id);
-          }
-          //console.log(sideDiff[id] + " - " + db.card(id).name);
-        });
-
-        /*
-        globals.matchGameStats.forEach((stats, i) => {
-          if (i !== 0) {
-            let prevChanges = stats.sideboardChanges;
-            prevChanges.added.forEach(
-              id => (deckDiff[id] = (deckDiff[id] || 0) - 1)
-            );
-            prevChanges.removed.forEach(
-              id => (deckDiff[id] = (deckDiff[id] || 0) + 1)
-            );
-          }
-        });
-        */
-
+        const sideboardChanges = getDeckChanges(
+          newDeck,
+          originalDeck,
+          globals.matchGameStats
+        );
         game.sideboardChanges = sideboardChanges;
-        game.deck = newDeck.clone().getSave();
+        game.deck = newDeck.clone().getSave(true);
       }
 
       game.handLands = game.handsDrawn.map(
         hand => hand.filter(card => db.card(card)?.type.includes("Land")).length
       );
-      const handSize = 8 - game.handsDrawn.length;
+      const handSize = 7;
       let deckSize = 0;
       let landsInDeck = 0;
       const multiCardPositions: MatchGameStats["multiCardPositions"] = {
@@ -252,7 +190,7 @@ export default function OutLogInfo(entry: Entry): void {
         0
       );
 
-      saveMatch(mid, new Date().getTime());
+      saveMatch(mid, Date.now());
     }
   }
 
