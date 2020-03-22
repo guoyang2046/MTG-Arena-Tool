@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable no-console */
 import path from "path";
-import { app, remote, ipcRenderer as ipc } from "electron";
+import { app, remote, ipcRenderer as ipc, IpcRendererEvent } from "electron";
 import fs from "fs";
 import _ from "lodash";
 import {
@@ -85,7 +85,7 @@ class Database {
     }
     */
 
-    this.handleSetDb(null, defaultDb);
+    this.setDb(defaultDb);
   }
 
   static getInstance(): Database {
@@ -96,7 +96,11 @@ class Database {
     return Database.instance;
   }
 
-  handleSetDb(_event: Event | null, arg: string): void {
+  handleSetDb(_event: IpcRendererEvent, arg: string): void {
+    this.setDb(arg);
+  }
+
+  public setDb(arg: string): void {
     try {
       this.metadata = JSON.parse(arg) as Metadata;
       for (const event of this.playBrawlEvents) {
@@ -119,12 +123,15 @@ class Database {
     }
   }
 
-  handleSetRewardResets(_event: Event, rewardsDate: RewardsDate): void {
+  handleSetRewardResets(
+    _event: IpcRendererEvent,
+    rewardsDate: RewardsDate
+  ): void {
     this.rewards_daily_ends = new Date(rewardsDate.daily);
     this.rewards_weekly_ends = new Date(rewardsDate.weekly);
   }
 
-  handleSetSeason(_event: unknown, season: SeasonAndRankDetail): void {
+  handleSetSeason(_event: IpcRendererEvent, season: SeasonAndRankDetail): void {
     try {
       this.season = season;
     } catch (e) {
@@ -132,7 +139,7 @@ class Database {
     }
   }
 
-  handleSetPreconDecks(_event: Event, arg: ArenaV3Deck[]): void {
+  handleSetPreconDecks(_event: IpcRendererEvent, arg: ArenaV3Deck[]): void {
     if (!arg || !arg.length) return;
     try {
       this.preconDecks = {};
