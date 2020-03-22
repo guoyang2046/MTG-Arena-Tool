@@ -6,7 +6,7 @@ import pd from "../../../shared/PlayerData";
 import ShareButton from "../misc/ShareButton";
 import ManaCost from "../misc/ManaCost";
 import Deck from "../../../shared/deck";
-import { actionLogDir, ipcSend } from "../../rendererUtil";
+import { actionLogDir, replaysDir, ipcSend } from "../../rendererUtil";
 import Button from "../misc/Button";
 import DeckList from "../misc/DeckList";
 import RankIcon from "../misc/RankIcon";
@@ -14,6 +14,7 @@ import db from "../../../shared/database";
 import CardList from "../misc/CardList";
 import CardsList from "../../../shared/cardsList";
 import ActionLog from "./ActionLog";
+import Replay from "./Replay";
 import uxMove from "../../uxMove";
 import { rendererSlice } from "../../../shared/redux/reducers";
 import { useDispatch } from "react-redux";
@@ -24,6 +25,7 @@ interface MatchViewProps {
 
 const VIEW_MATCH = 1;
 const VIEW_LOG = 2;
+const VIEW_REPLAY = 3;
 
 export function MatchView(props: MatchViewProps): JSX.Element {
   const { match } = props;
@@ -33,12 +35,18 @@ export function MatchView(props: MatchViewProps): JSX.Element {
   const oppDeck = new Deck(match.oppDeck);
 
   const logExists = fs.existsSync(path.join(actionLogDir, match.id + ".txt"));
+  const replayExists = fs.existsSync(path.join(replaysDir, match.id + ".json"));
   let actionLogDataB64 = "";
   let actionLogDataString = "";
   if (logExists) {
     const actionLogFile = path.join(actionLogDir, match.id + ".txt");
     actionLogDataB64 = fs.readFileSync(actionLogFile).toString("base64");
     actionLogDataString = fs.readFileSync(actionLogFile).toString();
+  }
+  let replayDataString = "";
+  if (replayExists) {
+    const replayFile = path.join(replaysDir, match.id + ".json");
+    replayDataString = fs.readFileSync(replayFile).toString();
   }
 
   const goBack = (): void => {
@@ -49,6 +57,10 @@ export function MatchView(props: MatchViewProps): JSX.Element {
 
   const openActionLog = (): void => {
     setView(VIEW_LOG);
+  };
+
+  const openReplay = (): void => {
+    setView(VIEW_REPLAY);
   };
 
   const openMatch = (): void => {
@@ -74,6 +86,16 @@ export function MatchView(props: MatchViewProps): JSX.Element {
         {view == VIEW_MATCH ? (
           <>
             <div className="flex_item">
+              {replayExists ? (
+                <Button
+                  style={{ marginLeft: "auto" }}
+                  onClick={openReplay}
+                  className="button_simple openLog"
+                  text="Replay"
+                ></Button>
+              ) : (
+                <></>
+              )}
               {logExists ? (
                 <>
                   <Button
@@ -118,7 +140,7 @@ export function MatchView(props: MatchViewProps): JSX.Element {
               })}
             </div>
           </>
-        ) : (
+        ) : view == VIEW_LOG ? (
           <>
             <Button
               style={{ margin: "auto" }}
@@ -129,6 +151,16 @@ export function MatchView(props: MatchViewProps): JSX.Element {
             <div className="actionlog-div">
               <ActionLog logStr={actionLogDataString} />
             </div>
+          </>
+        ) : (
+          <>
+            <Button
+              style={{ margin: "auto" }}
+              onClick={openMatch}
+              className={"button_simple centered"}
+              text="Go back"
+            ></Button>
+            <Replay replayStr={replayDataString} />
           </>
         )}
       </div>
