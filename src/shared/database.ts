@@ -85,7 +85,7 @@ class Database {
     }
     */
 
-    this.setDb(defaultDb);
+    this.handleSetDb(null, defaultDb);
   }
 
   static getInstance(): Database {
@@ -96,11 +96,7 @@ class Database {
     return Database.instance;
   }
 
-  handleSetDb(_event: IpcRendererEvent, arg: string): void {
-    this.setDb(arg);
-  }
-
-  public setDb(arg: string): void {
+  handleSetDb(_event: IpcRendererEvent | null, arg: string): void {
     try {
       this.metadata = JSON.parse(arg) as Metadata;
       for (const event of this.playBrawlEvents) {
@@ -124,14 +120,17 @@ class Database {
   }
 
   handleSetRewardResets(
-    _event: IpcRendererEvent,
+    _event: IpcRendererEvent | null,
     rewardsDate: RewardsDate
   ): void {
     this.rewards_daily_ends = new Date(rewardsDate.daily);
     this.rewards_weekly_ends = new Date(rewardsDate.weekly);
   }
 
-  handleSetSeason(_event: IpcRendererEvent, season: SeasonAndRankDetail): void {
+  handleSetSeason(
+    _event: IpcRendererEvent | null,
+    season: SeasonAndRankDetail
+  ): void {
     try {
       this.season = season;
     } catch (e) {
@@ -139,7 +138,10 @@ class Database {
     }
   }
 
-  handleSetPreconDecks(_event: IpcRendererEvent, arg: ArenaV3Deck[]): void {
+  handleSetPreconDecks(
+    _event: IpcRendererEvent | null,
+    arg: ArenaV3Deck[]
+  ): void {
     if (!arg || !arg.length) return;
     try {
       this.preconDecks = {};

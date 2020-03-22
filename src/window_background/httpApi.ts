@@ -477,7 +477,7 @@ function handleGetDatabaseResponse(
     //resetLogLoop(100);
     // delete parsedResult.ok;
     ipcLog("Metadata: Ok");
-    db.setDb(results);
+    db.handleSetDb(null, results);
     db.updateCache(results);
     ipcSend("set_db", results);
   }
