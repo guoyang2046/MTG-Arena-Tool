@@ -7,7 +7,7 @@ export default function clearDraftData(draftId: string): void {
     if (playerData.draft_index.includes(draftId)) {
       const draftIndex = [...playerData.draft_index];
       draftIndex.splice(draftIndex.indexOf(draftId), 1);
-      setData({ draftIndex }, false);
+      setData({ draft_index: draftIndex }, false);
       playerDb.upsert("", "draft_index", draftIndex);
     }
     setData({ [draftId]: null });

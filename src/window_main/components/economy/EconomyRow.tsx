@@ -467,9 +467,7 @@ function InventoryCard(props: InventoryCardProps): JSX.Element {
   const { card, isAetherized, quantity } = props;
   const onCardClick = React.useCallback(() => {
     const lookupCard = db.card(card?.dfcId) ?? card;
-    if (lookupCard) {
-      openScryfallCard(lookupCard);
-    }
+    openScryfallCard(lookupCard);
   }, [card]);
   // inventoryCard.style.width = "39px";
 
@@ -490,7 +488,7 @@ function InventoryCard(props: InventoryCardProps): JSX.Element {
           "inventory_card_img 39px" +
           (isAetherized ? " inventory_card_aetherized" : "")
         }
-        src={getCardImage(card ?? 0)}
+        src={getCardImage(card)}
         title={tooltip}
       />
       {quantity && quantity > 1 && (

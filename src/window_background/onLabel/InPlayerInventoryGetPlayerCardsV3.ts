@@ -16,7 +16,7 @@ interface Entry extends LogEntry {
 export default function InPlayerInventoryGetPlayerCardsV3(entry: Entry): void {
   const json = entry.json();
   if (!json) return;
-  const now = new Date();
+  const now = Date.now();
 
   let { cards_time, cards_before } = playerData.cards;
   if (cards_time) {

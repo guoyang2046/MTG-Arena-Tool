@@ -1,4 +1,3 @@
-import globals from "../globals";
 import LogEntry from "../../types/logDecoder";
 import selectDeck from "../selectDeck";
 import Deck from "../../shared/deck";
@@ -25,13 +24,4 @@ export default function OutDirectGameChallenge(entry: Entry): void {
   const parsedDeck = JSON.parse(deck) as ArenaV3Deck;
   const v2Parsed = convertDeckFromV3(parsedDeck);
   selectDeck(new Deck(v2Parsed));
-
-  const httpApi = require("../httpApi");
-  httpApi.httpTournamentCheck(
-    globals.currentDeck.getSave(),
-    json.params.opponentDisplayName,
-    false,
-    json.params.playFirst,
-    json.params.bo3
-  );
 }

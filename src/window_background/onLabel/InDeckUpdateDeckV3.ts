@@ -110,7 +110,10 @@ export default function InDeckUpdateDeckV3(entry: Entry): void {
       deckChangesIndex.push(changeId);
     }
     playerDb.upsert("", "deck_changes_index", deckChangesIndex);
-    setData({ deckChanges, deckChangesIndex });
+    setData({
+      deck_changes: deckChanges,
+      deck_changes_index: deckChangesIndex
+    });
   }
 
   const deckData = { ..._deck, ...entryDeck };

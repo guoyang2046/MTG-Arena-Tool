@@ -3,8 +3,7 @@ import {
   CardObject,
   InternalDeck,
   isV2CardsList,
-  v2cardsList,
-  isInternalDeck
+  v2cardsList
 } from "../types/Deck";
 import { DbCardData } from "../types/Metadata";
 import CardsList from "./cardsList";
@@ -26,7 +25,7 @@ class Deck {
   private commandZoneGRPIds: number[];
   private name: string;
   public id: string;
-  public lastUpdated: Date;
+  public lastUpdated: string;
   public tile: number;
   public _colors: Colors;
   public tags: string[];
@@ -55,29 +54,14 @@ class Deck {
     this.commandZoneGRPIds = mtgaDeck.commandZoneGRPIds ?? [];
     this.name = mtgaDeck.name ?? "";
     this.id = mtgaDeck.id ?? "";
-    this.lastUpdated = mtgaDeck.lastUpdated
-      ? new Date(mtgaDeck.lastUpdated)
-      : new Date();
+    this.lastUpdated = mtgaDeck.lastUpdated ?? "";
     this.tile = mtgaDeck.deckTileId ? mtgaDeck.deckTileId : DEFAULT_TILE;
     this._colors = this.getColors();
-    this.format = mtgaDeck.format || "";
-    this.id = mtgaDeck.id || "";
+    this.tags = mtgaDeck.tags ?? [mtgaDeck.format as string];
+    this.custom = mtgaDeck.custom ?? false;
+    this.archetype = mtgaDeck.archetype ?? "";
+    this.format = mtgaDeck.format ?? "";
     this.description = mtgaDeck.description ?? "";
-
-    if (!isInternalDeck(mtgaDeck)) {
-      this.tags = [mtgaDeck.format ?? "unknown"];
-    } else {
-      this.tags = [mtgaDeck.format ?? "unknown"] || mtgaDeck.tags;
-    }
-
-    this.custom = isInternalDeck(mtgaDeck) ? mtgaDeck.custom || false : false;
-
-    this.archetype = isInternalDeck(mtgaDeck) ? mtgaDeck.archetype || "" : "";
-
-    this.lastUpdated = mtgaDeck.lastUpdated
-      ? new Date(mtgaDeck.lastUpdated)
-      : new Date();
-
     return this;
   }
 
@@ -366,7 +350,7 @@ class Deck {
       }),
       name: this.name,
       id: this.id,
-      lastUpdated: this.lastUpdated.toISOString(),
+      lastUpdated: this.lastUpdated,
       deckTileId: this.tile,
       colors: this.colors.get(),
       tags: this.tags || [],

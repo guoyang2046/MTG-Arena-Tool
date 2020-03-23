@@ -35,7 +35,6 @@ export default function processMatch(
   if (match.eventId == "DirectGame" && globals.currentDeck) {
     const str = globals.currentDeck.getSave();
     const httpApi = require("../httpApi");
-    httpApi.httpTournamentCheck(str, match.opponent.name, true);
   }
 
   return match;

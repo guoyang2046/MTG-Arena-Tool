@@ -1,9 +1,8 @@
 import LogEntry from "../../types/logDecoder";
 import { DraftStatus } from "../../types/draft";
 import startDraft from "../draft/startDraft";
-import clearDraftData from "../draft/clearDraftData";
-import getDraftData from "../draft/getDraftData";
 import setDraftData from "../draft/setDraftData";
+import globals from "../globals";
 
 interface Entry extends LogEntry {
   json: () => DraftStatus;
@@ -15,18 +14,9 @@ export default function InDraftDraftStatus(entry: Entry): void {
   if (!json) return;
 
   startDraft();
-  const {
-    DraftId: draftId,
-    PackNumber: packNumber,
-    PickNumber: pickNumber,
-    PickedCards
-  } = json;
-  if (packNumber === 0 && pickNumber === 0 && PickedCards.length === 0) {
-    // ensure new drafts have clear working-space
-    clearDraftData(draftId);
-  }
+
   const data = {
-    ...getDraftData(draftId),
+    ...globals.currentDraft,
     ...json,
     currentPack: (json.DraftPack || []).slice(0)
   };
