@@ -23,6 +23,7 @@ import { compareDesc } from "date-fns";
 import { useDispatch } from "react-redux";
 import { rendererSlice } from "../../../shared/redux/reducers";
 import { InternalMatch } from "../../../types/match";
+import { InternalDraft } from "../../../types/draft";
 import uxMove from "../../uxMove";
 
 function DraftRares({ event }: { event: EventTableData }): JSX.Element {
@@ -30,17 +31,18 @@ function DraftRares({ event }: { event: EventTableData }): JSX.Element {
   let draftRares: JSX.Element[] = [];
   if (pd.draftExists(draftId)) {
     const draft = pd.draft(draftId);
-    draftRares = [
-      ...draft.pickedCards
-        .map((cardId: number) => db.card(cardId))
+    if (draft) {
+      const pool = [...draft.CardPool];
+      draftRares = pool
+        .map((cardId: string | number) => db.card(cardId))
         .filter(
-          (card: DbCardData) =>
-            (card && card.rarity == "rare") || card.rarity == "mythic"
+          (card: DbCardData | undefined) =>
+            card && (card.rarity == "rare" || card.rarity == "mythic")
         )
-        .map((card: DbCardData, index: number) => {
-          return <RoundCard key={index} card={card}></RoundCard>;
-        })
-    ];
+        .map((card: DbCardData | undefined, index: number) => {
+          return card ? <RoundCard key={index} card={card}></RoundCard> : <></>;
+        });
+    }
   }
   return (
     <div
@@ -170,7 +172,7 @@ function EventSubRows({
     [dispatcher]
   );
 
-  const matchRows: InternalMatch[] = React.useMemo(() => {
+  const matchRows: Array<InternalMatch | InternalDraft> = React.useMemo(() => {
     if (!expanded) {
       return [];
     }
@@ -181,8 +183,10 @@ function EventSubRows({
       if (!a || !b) return 0;
       return compareDesc(new Date(a.date), new Date(b.date));
     });
-    if (pd.draftExists(draftId)) {
-      matchRows.unshift(pd.draft(draftId));
+    const draft = pd.draft(draftId);
+    if (draft) {
+      // This shouldnt be a mixed array, it should be rendered instead
+      matchRows.unshift(draft);
     }
     return matchRows;
   }, [draftId, event.stats.matchIds, expanded]);
@@ -196,13 +200,13 @@ function EventSubRows({
           <ListItemMatch
             key={match.id}
             tags={match.tags}
-            match={match}
+            match={match as InternalMatch}
             openMatchCallback={openMatch}
           />
         ) : (
           <ListItemDraft
             key={match.id}
-            draft={match}
+            draft={match as InternalDraft}
             openDraftCallback={openDraft}
           />
         );

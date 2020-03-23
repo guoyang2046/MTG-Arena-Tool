@@ -27,7 +27,7 @@ export default function saveMatch(id: string, matchEndTime: number): void {
   if (!playerData.matches_index.includes(id)) {
     const matchesIndex = [...playerData.matches_index, id];
     playerDb.upsert("", "matches_index", matchesIndex);
-    setData({ matchesIndex }, false);
+    setData({ matches_index: matchesIndex }, false);
   }
 
   playerDb.upsert("", id, match);
