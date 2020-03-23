@@ -84,7 +84,7 @@ class NoInstanceException {
   }
 }
 
-function instanceIdToObject(instanceID: number): GameObject {
+export function instanceIdToObject(instanceID: number): GameObject {
   const orig = instanceID;
   while (
     !globals.currentMatch.gameObjs[instanceID] &&
@@ -794,17 +794,16 @@ function checkTurnDiff(turnInfo: TurnInfo): void {
   ) {
     globals.currentMatch.onThePlay = turnInfo.activePlayer;
   }
+  if (
+    turnInfo.priorityPlayer !== globals.currentMatch.turnInfo.currentPriority
+  ) {
+    changePriority(
+      globals.currentMatch.turnInfo.currentPriority,
+      turnInfo.priorityPlayer,
+      globals.logTime
+    );
+  }
   if (globals.currentMatch.turnInfo.turnNumber !== turnInfo.turnNumber) {
-    if (
-      turnInfo.priorityPlayer !== globals.currentMatch.turnInfo.currentPriority
-    ) {
-      changePriority(
-        turnInfo.priorityPlayer,
-        globals.currentMatch.turnInfo.currentPriority,
-        globals.logTime
-      );
-    }
-
     actionLog(
       -1,
       globals.logTime,
